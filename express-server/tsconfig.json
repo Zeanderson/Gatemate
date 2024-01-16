@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {  
+    "target": "es2017",     
+    "lib": ["esnext"],
+    "allowJs": true,
+    "strict": true,    
+    "forceConsistentCasingInFileNames": true,    
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "./dist",                               
+    "esModuleInterop": true,                                                                   
+    "importHelpers": true                               
+  }, 
+  "include": ["src/**/*", "src/express-server.ts", "src/controllers/home.ts"],
+}
