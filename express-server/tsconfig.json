@@ -12,5 +12,5 @@
     "esModuleInterop": true,                                                                   
     "importHelpers": true                               
   }, 
-  "include": ["src/**/*", "src/express-server.ts", "src/controllers/home.ts"],
+  "include": ["src/**/*", "src/express-server.ts", "src/controllers/weather.ts"],
 }

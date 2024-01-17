@@ -1,5 +1,5 @@
 import express  from 'express';
-import homeRouter from './controllers/home';
+import homeRouter from './controllers/weather';
 
 //TODO Needs to be in ENV file
 const PORT = 3000;
