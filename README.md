@@ -29,7 +29,7 @@
     * variable value : `C:\Program Files\nodejs`
 
 
-## Cloning repo
+## Cloning repository
 * Open new vscode window and navigate to the source control tab
     * Clone Repository
     * Paste `https://github.com/Zeanderson/Gatemate.git`
