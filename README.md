@@ -5,6 +5,7 @@
 * [General Info](#general-info)
 * [Setup](#setup)
 * [Dependencies](#dependencies)
+* [How to run](#how-to-run)
 * [express-server](#express-server)
 * [gatemate](#gatemate)
 * [trafficGenerator](#trafficgenerator)
