@@ -1,5 +1,5 @@
-# Gatemate - Spring 2023 Team 7
-A web app using react,vite,express,and node to monitor and adjust gatemates at any time any place
+# Gatemate Team 7 - Spring 2023
+* A web app using react,vite,express,and node to monitor and adjust gatemates at any time any place
 
 ## Table of Contents
 * [General Info](#general-info)
@@ -47,11 +47,28 @@ cd gatemate
 npm install 
 ```
 
+## How to run
+* Terminal 1 
+```
+cd express-server
+```
+npm run start
+```
+
+* Terminal 2
+```
+cd gatemate
+```
+npm run build
+```
+npm run dev
+```
+
 ## express-server
-This is where information of how the express server folder is laid out will be
+* This is where information of how the express server folder is laid out will be
 
 ## gatemate 
-This is where information of how the gatemate folder is laid out will be
+* This is where information of how the gatemate folder is laid out will be
 
 ## trafficGenerator
-This is where information about how traffic generator works
+* This is where information about how traffic generator works
