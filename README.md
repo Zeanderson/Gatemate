@@ -5,32 +5,32 @@ A web app using react,vite,express,and node to monitor and adjust gatemates at a
 * [General Info](#general-info)
 * [Setup](#setup)
 * [Dependencies](#dependencies)
-* Files
 * [express-server](#express-server)
 * [gatemate](#gatemate)
 * [trafficGenerator](#trafficgenerator)
 
 ## General Info
+* Project Contributors: -------------
 
 ## Setup
-Install [vscode](https://code.visualstudio.com/download/)
+* Install [vscode](https://code.visualstudio.com/download/)
 
-Install [Node](https://nodejs.org/en/download)
+* Install [Node](https://nodejs.org/en/download)
 
-Install [Git](https://git-scm.com/download/win)
+* Install [Git](https://git-scm.com/download/win)
 
-Navigate to set path variable ->
-* advanced system settings
-* environment variables
-* new user variable
-* variable name :  `node.js`
-* variable value : `C:\Program Files\nodejs`
+* Navigate to set path variable ->
+    * advanced system settings
+    * environment variables
+    * new user variable
+    * variable name :  `node.js`
+    * variable value : `C:\Program Files\nodejs`
 
 
-Open a new vscode window and navigate to the source control tab
-* Clone Repository
-* Paste `https://github.com/Zeanderson/Gatemate.git`
-* Put inside a folder at your disgression
+* Open new vscode window and navigate to the source control tab
+    * Clone Repository
+    * Paste `https://github.com/Zeanderson/Gatemate.git`
+    * Put inside a folder at your disgression
 
 
 ## Dependencies
