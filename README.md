@@ -5,6 +5,7 @@
 * [General Info](#general-info)
 * [Setup](#setup)
 * [Dependencies](#dependencies)
+* [Cloning](#cloning-repo)
 * [How to run](#how-to-run)
 * [express-server](#express-server)
 * [gatemate](#gatemate)
@@ -28,6 +29,7 @@
     * variable value : `C:\Program Files\nodejs`
 
 
+## Cloning repo
 * Open new vscode window and navigate to the source control tab
     * Clone Repository
     * Paste `https://github.com/Zeanderson/Gatemate.git`
@@ -53,6 +55,7 @@ npm install
 ```
 cd express-server
 ```
+```
 npm run start
 ```
 
@@ -60,7 +63,9 @@ npm run start
 ```
 cd gatemate
 ```
+```
 npm run build
+```
 ```
 npm run dev
 ```
