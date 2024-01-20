@@ -6,9 +6,7 @@ type WeatherData = {
 }
 
 export const fetchWeatherData = async (query = ""): Promise < WeatherData[] > => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Fetched Weather Data")
-
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
     const weatherData = [
         {
             "city": "New York",

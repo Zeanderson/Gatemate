@@ -2,9 +2,6 @@ import './App.css'
 import {
   createBrowserRouter,
   RouterProvider,
-  Router,
-  Link,
-  redirect,
 } from "react-router-dom"
 
 import Home from './routes/Home'

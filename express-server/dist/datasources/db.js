@@ -2,8 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchWeatherData = void 0;
 const fetchWeatherData = async (query = "") => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Fetched Weather Data");
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
     const weatherData = [
         {
             "city": "New York",

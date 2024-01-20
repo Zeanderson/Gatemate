@@ -4,7 +4,7 @@ const tslib_1 = require("tslib");
 const express_1 = tslib_1.__importDefault(require("express"));
 const weather_1 = tslib_1.__importDefault(require("./controllers/weather"));
 //TODO Needs to be in ENV file
-const PORT = 3000;
+const PORT = 4001;
 const app = (0, express_1.default)();
 // Middleware goes here -- IF it does not go above routes it will not work ;)
 app.use(express_1.default.json());
