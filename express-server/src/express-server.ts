@@ -1,5 +1,7 @@
 import express  from 'express';
 import homeRouter from './controllers/weather';
+import dotenv from 'dotenv';
+dotenv.config();
 
 //TODO Needs to be in ENV file
 const PORT = 4001;

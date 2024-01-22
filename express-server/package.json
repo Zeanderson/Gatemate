@@ -20,5 +20,8 @@
     "rimraf": "^5.0.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "dotenv": "^16.3.2"
   }
 }

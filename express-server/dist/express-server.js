@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const express_1 = tslib_1.__importDefault(require("express"));
 const weather_1 = tslib_1.__importDefault(require("./controllers/weather"));
+const dotenv_1 = tslib_1.__importDefault(require("dotenv"));
+dotenv_1.default.config();
 //TODO Needs to be in ENV file
 const PORT = 4001;
 const app = (0, express_1.default)();
