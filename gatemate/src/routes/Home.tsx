@@ -28,21 +28,24 @@ function Header() {
     }
 
     return (
-        <div className={'flex flex-row gap-2 font-Arvo font-bold'}>
-                <UserBanner userName={"Farmer Jeff"} settingsLink={'/'} signOutLink={'/'} className={'basis-1/4'}/>
-                <WeatherBanner className={'basis-3/4'}>
-                    <div className={'flex flex-row gap-2'}>
-                        {results.data.map((weather: Weather,index: number) => {
-                            return (
-                                <div className={'flex flex-row gap-1'} key={index}>
-                                    <h2>{weather.city}</h2>
-                                    <p>Temperature: {weather.temperature}</p>
-                                    <p>Humidity: {weather.humidity}</p>
-                                </div>
-                            )
-                        })}
-                    </div>
-                </WeatherBanner>
+        // <div className={'flex flex-row gap-2 font-Arvo font-bold'}>
+        //         <UserBanner userName={"Farmer Jeff"} settingsLink={'/'} signOutLink={'/'} className={'basis-1/4'}/>
+        //         <WeatherBanner className={'basis-3/4'}>
+        //             <div className={'flex flex-row gap-2'}>
+        //                 {results.data.map((weather: Weather,index: number) => {
+        //                     return (
+        //                         <div className={'flex flex-row gap-1'} key={index}>
+        //                             <h2>{weather.city}</h2>
+        //                             <p>Temperature: {weather.temperature}</p>
+        //                             <p>Humidity: {weather.humidity}</p>
+        //                         </div>
+        //                     )
+        //                 })}
+        //             </div>
+        //         </WeatherBanner>
+        // </div>
+        <div>
+            {"Hello everyone"}
         </div>
     )
 }
