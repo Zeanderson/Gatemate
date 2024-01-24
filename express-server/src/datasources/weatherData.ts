@@ -1,7 +1,8 @@
 export async function getWeather(lat: number, lon: number): Promise<any> {
   const apiKey: string = process.env.weather_api_key ?? "";
   const apiUrl: string = process.env.weather_api_url ?? "";
-
+  //TODO Type out the weatherJson, what is returning from the API, and what do we actually need
+  
   try {
     const response: Response = await fetch(
       `${apiUrl}?lat=${lat}&lon=${lon}&appid=${apiKey}`

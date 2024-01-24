@@ -4,6 +4,16 @@ import { getWeather } from "../datasources/weatherData";
 
 const homeRouter = Router();
 
+// type weatherData = {
+//   summary: string;
+//   temperature: {
+//     day: number;
+//     min: number;
+//     max: number;
+
+//   };
+// };
+
 homeRouter.get("/weather", async (req, res) => {
   // We can change this back if needed to get our hard-coded data.
   // const weatherData = await fetchWeatherData();
