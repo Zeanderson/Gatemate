@@ -1,11 +1,35 @@
-export async function getWeather(lat: number, lon: number): Promise<any> {
+async function getWeather(location:string){
   const apiKey: string = process.env.weather_api_key ?? "";
   const apiUrl: string = process.env.weather_api_url ?? "";
-  //TODO Type out the weatherJson, what is returning from the API, and what do we actually need
-  
+
+  // Default to Fayetteville
+  let lat = 36.061932;
+  let lon = -94.160583;
+
+  const lats = {
+    Simsboro: 35.025371,
+    Magnolia: 33.267076,
+  }
+
+  const lons = {
+    Simsboro: -90.373155,
+    Magnolia: -93.239384,
+  } 
+
+  if (location === "Simsboro") {
+    lat = lats.Simsboro;
+    lon = lons.Simsboro;
+  } 
+
+  if (location === "Magnolia") {
+    lat = lats.Magnolia;
+    lon = lons.Magnolia;
+  }
+
+
   try {
     const response: Response = await fetch(
-      `${apiUrl}?lat=${lat}&lon=${lon}&appid=${apiKey}`
+      `${apiUrl}?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`
     );
 
     if (!response.ok) {
@@ -20,3 +44,5 @@ export async function getWeather(lat: number, lon: number): Promise<any> {
     console.error("Error fetching weather data:", error.message);
   }
 }
+
+export default getWeather;

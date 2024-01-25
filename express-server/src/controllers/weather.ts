@@ -1,25 +1,15 @@
 import { Router } from "express";
-import { fetchWeatherData } from "../datasources/db";
-import { getWeather } from "../datasources/weatherData";
-
+import getWeather from "../datasources/weatherData";
+import { weatherData} from "../types";
 const homeRouter = Router();
 
-// type weatherData = {
-//   summary: string;
-//   temperature: {
-//     day: number;
-//     min: number;
-//     max: number;
-
-//   };
-// };
-
 homeRouter.get("/weather", async (req, res) => {
-  // We can change this back if needed to get our hard-coded data.
-  // const weatherData = await fetchWeatherData();
-
-  //Weather for Fayetteville
-  const weatherData = await getWeather(36.061932, -94.160583);
+  const area = req.query.input;
+  if (area === undefined || typeof(area) !== "string") {
+    return res.send("Please enter an area");
+  }
+  // Weather for Fayetteville for the next 7 days
+  const weatherData : weatherData = await getWeather(area);
   res.send(weatherData);
 });
 
