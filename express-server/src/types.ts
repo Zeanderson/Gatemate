@@ -1,4 +1,43 @@
-export type dailyWeather = {
+/*
+* IF YOU WANT TO ADD A TYPE: 
+    IF the type you want to add will be stored in the database, then you must complete the following steps: 
+    [1.] The type must be extended by the type "collectionName". 
+    [2.] The type must be added to the union type "validDBType". 
+    [3.] The name of the type must be added as a string into the list "validCollectionNames". 
+
+    After these steps, all database operations defined in db.ts will work on this type. Please consult db.ts 
+    for the reasons why we do this. 
+    EXAMPLE: If we have the type Spell defined as: 
+
+    export type Spell = {
+      name: string, 
+      damage: number, 
+    }
+
+    Then we would extend it: 
+
+    export type Spell = collectionName & {
+      name: string, 
+      damage: number, 
+    }
+
+    add it to the union type: 
+
+    export type validDBType = ExampleType1 | ExampleType2 | Spell; 
+
+    and add the name to the list: 
+
+    export const validCollectionNames = ["ExampleType1", "ExampleType2", "Spell"]; 
+*/
+
+type collectionName = {
+  collectionName: string 
+}
+
+export type validDBType           =   dailyWeather |  weatherData |  User; 
+export const validCollectionNames = ["dailyWeather", "weatherData", "User"]; 
+
+export type dailyWeather = collectionName & {
   dt: number;
   sunrise: number;
   sunset: number;
@@ -35,7 +74,7 @@ export type dailyWeather = {
   uvi: number;
 };
 
-export type weatherData = {
+export type weatherData = collectionName & {
   presentDay: {
     weather: dailyWeather;
   };
@@ -62,7 +101,7 @@ export type weatherData = {
   };
 };
 
-export type User = {
+export type User = collectionName & {
   email: string;
   password: string;
 };

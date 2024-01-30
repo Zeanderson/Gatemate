@@ -28,6 +28,12 @@
     * variable name :  `node.js`
     * variable value : `C:\Program Files\nodejs`
 
+* Add the MongoDB Node.js Driver 
+```
+npm install mongodb --save
+```
+
+* Add the MongoDB user login information into the environment file
 
 ## Cloning repository
 * Open new vscode window and navigate to the source control tab
