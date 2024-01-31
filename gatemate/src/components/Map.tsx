@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Map from 'react-map-gl';
 
 
@@ -6,15 +5,16 @@ function GLMap() {
     return (
         <div>
             <Map
+                mapboxAccessToken={import.meta.env.VITE_MAP_BOX_KEY}
                 mapLib={import('mapbox-gl')}
                 initialViewState={{
-                    longitude: -100,
-                    latitude: 40,
-                    zoom: 3.5
+                    longitude: -94.160583,
+                    latitude: 36.061932,
+                    zoom: 10,
                 }}
-                style={{ width: 600, height: 400 }}
+                style={{ width: 1300, height: 650 }}
                 mapStyle="mapbox://styles/mapbox/streets-v9"
-            />;
+            />
         </div>
     )
 }
