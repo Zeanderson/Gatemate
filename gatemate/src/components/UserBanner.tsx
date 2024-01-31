@@ -12,18 +12,18 @@ type BannerProps = {
 
 export function UserBanner(props: BannerProps) {
     return (
-        <div className={"flex flex-row gap-2 rounded-xl bg-indigo-950 py-2 pl-5 pr-5 items-center justify-between max-w-[20rem] min-w-[20rem] " + props.className}> 
+        <div className={"flex flex-row gap-2 rounded-xl bg-indigo-950 py-2 pl-5 pr-5 items-center justify-between " + props.className}>
             <h1>{props.userName}</h1>
-                <div className={'flex flex-col'}>
-                    <div className='flex gap-2 items-center'>
-                        <Link to={props.settingsLink}>{"Settings"}</Link>
-                        <FontAwesomeIcon icon={faGear}/>
-                    </div>
-                    <div className={'flex gap-2 items-center'}>
-                        <Link to={props.signOutLink}>{"Sign Out"}</Link>
-                        <FontAwesomeIcon icon={faDoorOpen}/>
-                    </div>
+            <div className={'flex flex-col'}>
+                <div className='flex gap-2 items-center'>
+                    <Link to={props.settingsLink}>{"Settings"}</Link>
+                    <FontAwesomeIcon icon={faGear} />
                 </div>
+                <div className={'flex gap-2 items-center'}>
+                    <Link to={props.signOutLink}>{"Sign Out"}</Link>
+                    <FontAwesomeIcon icon={faDoorOpen} />
+                </div>
+            </div>
         </div>
     )
 }
