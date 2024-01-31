@@ -13,10 +13,24 @@
 // localhost:4001/api/v1/traffic/gen1
 // -------------------------------------------------------------------
 
+//! Leonard finish 
+type Gate = {
+  idealWaterLevel: number,
+  threshold: number,
+  actualWaterLevel: number,
+  connectionError: boolean,
+  lowBattery: boolean,
+  status: string
+}
 
-async function generateTraffic() {
+type TrafficReturn = {
+  userId: number,
+  fieldId: number,
+  gates: Gate[],
+}
+
+async function generateTraffic(userId: number, fieldId: number) {
   // Logic goes here : )
-
   // TODO: Ultimately some of these values will need to be passed in from the front end, things like the fieldID, gateID, and optionally waterLevel can be updated within the generator, or the generator can provide a value to update the waterLevel with
   // TODO the status(green, yellow, red) will likely be handled by something else that is not the traffic generator but for now it is included here
   let fieldID = 1;
@@ -76,12 +90,34 @@ async function generateTraffic() {
   }
 
   // gate = [fieldID, gateID, status, waterLevel, threshold, connectionError, lowBattery]
-  return status;
+
+
+
+  // Could generate a const fieldID = math.random(ads;lfkajsd;flkj)
+  const mockData = {
+    idealWaterLevel: 5,
+    threshold: 1,
+    actualWaterLevel: actualWaterLevel,
+    connectionError: connectionError,
+    lowBattery: lowBattery,
+    status: status
+  }
+
+
+  const traffic = {
+    userId: userId,
+    fieldId: fieldId,
+    gates: [
+      mockData
+    ],
+  }
+  return traffic;
 }
 
 
 async function getTraffic() {
-  const traffic = await generateTraffic();
+  // generateTraffic (userId, fieldId)
+  const traffic: TrafficReturn = await generateTraffic(1, 69);
   return traffic
 }
 
