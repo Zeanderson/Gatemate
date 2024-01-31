@@ -34,26 +34,32 @@ function Signin() {
     };
 
     return (
-    <div className={'flex flex-col gap-10 p-2'}>
-        <h1 className='text-2xl'>Sign in</h1>
-        <h2>marlise</h2>
-        <div className='flex flex-col gap-2'>
+    <div className="flex items-center justify-center h-screen">
+        <div className={'flex flex-col gap-10 p-2'}>
+            <h1 className='text-2xl text-center'>Sign in</h1>
+            <div className='flex flex-col gap-2'>
 
-            <label>Username / Email</label>
-            <input id="user" className='max-w-xs' value={username} onChange={handleUsernameChange} />
+            <div className="flex flex-col items-center">
+                <label>Username / Email</label>
+                <input id="user" className='max-w-xs' value={username} onChange={handleUsernameChange} />
+            </div>
 
-            <label>Password</label>
-            <input id="pass" className='max-w-xs' type="password" value={password} onChange={handlePasswordChange} />
 
-            <button onClick={handleSignIn} className='border border-solid rounded-xl p-1 max-w-[10rem] hover:bg-blue-500 hover:border-none'>Sign in</button>
-            
-            {/* //TODO This does not need to be an "<a/> tag, we need a onClick on the button to go to a function to check things such as if inputs have correct things in them" */}
-            {/* // or if there is anything. Call a backend call to check auth, and then return going to home with user data, or a error to sign up or invalid */}
+            <div className="flex flex-col items-center">
+                <label>Password</label>
+                <input id="pass" className='max-w-xs' type="password" value={password} onChange={handlePasswordChange} />
+            </div>
+
+                <button onClick={handleSignIn} className='border border-solid rounded-xl p-1 max-w-[10rem] mx-auto hover:bg-blue-500 hover:border-none'>Sign in</button>
+                
+                {/* //TODO This does not need to be an "<a/> tag, we need a onClick on the button to go to a function to check things such as if inputs have correct things in them" */}
+                {/* // or if there is anything. Call a backend call to check auth, and then return going to home with user data, or a error to sign up or invalid */}
+            </div>
+
+            <a className='flex max-w-[4rem] mx-auto' href="/signup">
+                <button className='border border-solid rounded-xl p-1 hover:bg-blue-500 hover:border-none'>Sign up</button>
+            </a>
         </div>
-
-        <a className='flex max-w-[4rem]' href="/signup">
-            <button className='border border-solid rounded-xl p-1 hover:bg-blue-500 hover:border-none'>Sign up</button>
-        </a>
     </div>
     )
 }
