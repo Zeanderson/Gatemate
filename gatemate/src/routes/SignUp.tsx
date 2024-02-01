@@ -20,22 +20,28 @@ function Signup() {
     };
 
     return (
-    <div className={'flex flex-col gap-10 p-2'}>
-        <h1 className='text-2xl'>Sign up</h1>
-        <div className='flex flex-col gap-2'>
+    <div className="flex items-center justify-center h-screen">
+        <div className={'flex flex-col gap-10 p-2'}>
+            <h1 className='text-3xl text-center'>Sign Up</h1>
+            <div className='flex flex-col gap-2'>
 
-            <label>Username / Email</label>
-            <input id="user" className='max-w-xs' value={username} onChange={handleUsernameChange} />
+                <div className="flex flex-col items-center">
+                    <label className="text-lg">Username/Email</label>
+                    <input id="user" className='max-w-xs rounded-lg' value={username} onChange={handleUsernameChange} />
+                </div>
 
-            <label>Password</label>
-            <input id="pass" className='max-w-xs' type="password" value={password} onChange={handlePasswordChange} />
+                <div className="flex flex-col items-center">
+                    <label className="text-lg">Password</label>
+                    <input id="pass" className='max-w-xs rounded-lg' type="password" value={password} onChange={handlePasswordChange} />
+                </div>
 
-            <button onClick={() => {submitUser(username,password)}} className='border border-solid rounded-xl p-1 max-w-[10rem] hover:bg-blue-500 hover:border-none'>Sign in</button>
+                <button onClick={() => {submitUser(username,password)}} className='border border-solid rounded-xl p-1 max-w-[10rem] mx-auto hover:bg-blue-500 hover:border-none'>Sign Up</button>
+            </div>
+
+            <a className='flex max-w-[10rem] mx-auto' href="/">
+                <button className='border border-solid rounded-xl p-1 hover:bg-blue-500 hover:border-none whitespace-no-wrap'>Back to Sign In</button>
+            </a>
         </div>
-
-        <a className='flex max-w-[4rem]' href="/">
-            <button className='border border-solid rounded-xl p-1 hover:bg-blue-500 hover:border-none'>Back to sign in</button>
-        </a>
     </div>
     )
 }
