@@ -1,13 +1,17 @@
 import express from "express";
 import homeRouter from "./controllers/weather";
 import dotenv from "dotenv";
-import userRouter from "./controllers/userController";
 dotenv.config();
+import userRouter from "./controllers/userController";
+import { connect } from "./datasources/db";
 
 //TODO Needs to be in ENV file
 const PORT = 4001;
 
 const app = express();
+
+//Connecting to the database once and reusing the connection
+connect();
 
 // Middleware goes here -- IF it does not go above routes it will not work ;)
 app.use(express.json());

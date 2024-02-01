@@ -1,6 +1,8 @@
 import { User } from "../types";
 import { Router } from "express";
 import * as argon2 from "argon2";
+import { readDoc, createDoc } from "../datasources/db";
+
 const userRouter = Router();
 
 /*
@@ -10,32 +12,61 @@ const userRouter = Router();
 */
 
 userRouter.post("/login", async (req, res) => {
-  const User: User = req.body;
-  console.log(User);
-  //get hash from database (We don't have db info yet)
-  const hash = await argon2.hash(User.password);
-  const verified = await verifyPassword(User, hash);
-  if (verified) {
-    res.status(200).send({ message: "Login successful" });
-  } else {
-    res.status(401).send({ message: "Login failed" });
+  const user: User = req.body;
+
+  try {
+    const existingUser = await readDoc(
+      {
+        email: user.email,
+        password: user.password,
+        collectionName: "User",
+      },
+      { email: user.email }
+    );
+
+    if (existingUser) {
+      const verified = await verifyPassword(user, existingUser.password);
+
+      if (verified) {
+        res.status(200).send({ message: "Login successful" });
+      } else {
+        res.status(401).send({ message: "Login failed" });
+      }
+    } else {
+      res.status(401).send({ message: "User not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Internal server error" });
   }
 });
 
 userRouter.post("/register", async (req, res) => {
   try {
-    const User: User = req.body;
-    // Make sure user doesn't already exist
-    // const existingUser = await findUser(User.username);
-    //if (existingUser)
+    const user: User = req.body;
+    const existingUser = await readDoc(
+      {
+        email: user.email,
+        password: user.password,
+        collectionName: "User",
+      },
+      { email: user.email }
+    );
 
-    const hash = await hashPassword(User);
-    // Add user to database
-    // await addUserToDatabase({ ...User, password: hash });
+    if (existingUser) {
+      res.status(400).send({ message: "User already exists" });
+    } else {
+      const hashedPassword = await hashPassword(user);
+      await createDoc({
+        ...user,
+        password: hashedPassword,
+        collectionName: "User",
+      });
 
-    res.status(201).send({ message: "User added to database" });
-  } catch (err) {
-    console.error(err);
+      res.status(201).send({ message: "User added to the database" });
+    }
+  } catch (error) {
+    console.error(error);
     res.status(500).send({ message: "Internal server error" });
   }
 });
@@ -45,29 +76,28 @@ userRouter.post("/register", async (req, res) => {
     * Password hashing helper functions
 */
 
-//Use when creating a new user
-let hashPassword = async (User: User): Promise<string> => {
+// Use when creating a new user
+let hashPassword = async (user: User): Promise<string> => {
   try {
-    const hash: string = await argon2.hash(User.password);
-    return hash;
+    const hashedPassword: string = await argon2.hash(user.password);
+    return hashedPassword;
   } catch (err) {
-    //Would need to actually handle this error properly (going to send a 500 error or something once database is going)
-    console.log(err);
+    console.error(err);
+    throw new Error("Error hashing password");
   }
-  return "Error";
 };
 
-//use when trying to login
-let verifyPassword = async (User: User, hash: string): Promise<boolean> => {
+// Use when trying to login
+let verifyPassword = async (
+  user: User,
+  hashedPassword: string
+): Promise<boolean> => {
   try {
-    if (await argon2.verify(hash, User.password)) {
-      return true;
-    }
+    return await argon2.verify(hashedPassword, user.password);
   } catch (err) {
-    //Would need to actually handle this error properly (going to send a 500 error or something once database is going)
-    console.log(err);
+    console.error(err);
+    throw new Error("Error verifying password");
   }
-  return false;
 };
 
 export default userRouter;

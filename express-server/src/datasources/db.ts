@@ -39,133 +39,130 @@
     TODO: Write better error handling for CRUD operations. Add CRUD operations that can handle batches of documents. 
 */
 
-
 import { validDBType } from "../types";
 import { validCollectionNames } from "../types";
+const { MongoClient, ServerApiVersion } = require("mongodb");
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+// Fetch environment variables
+const MDB_USER = process.env.MDB_USER;
+const MDB_PASS = process.env.MDB_PASS;
 
-// Fetch environment variabels 
-const MDB_USER = process.env.MDB_USER; 
-const MDB_PASS = process.env.MDB_PASS; 
+// Connection string to connect to the MongoDB server
+const uri = `mongodb+srv://${MDB_USER}:${MDB_PASS}@gatemate.qzhtx4h.mongodb.net/?retryWrites=true&w=majority`;
 
-// Connection string to connect to the MongoDB server 
-const uri = `mongodb+srv://${MDB_USER}:${MDB_PASS}@$gatemate.qzhtx4h.mongodb.net/?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
+
+async function connect() {
+  try {
+    await client.connect();
+    console.log("Connected to the database");
+  } catch (e) {
+    console.error("Error connecting to the database:", e);
+  }
+}
+
+function getClient() {
+  return client;
+}
+
+async function close() {
+  await client.close();
+  console.log("Connection to the database closed");
+}
 
 function getCollectionName(document: validDBType) {
-    if(validCollectionNames.includes(document.collectionName)) {
-      return document.collectionName; 
+  if (validCollectionNames.includes(document.collectionName)) {
+    return document.collectionName;
+  }
+
+  console.error("Document is not a valid DB type.");
+}
+
+async function pingDB() {
+  try {
+    await client.db("admin").command({ ping: 1 });
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function createDoc(document: validDBType) {
+  try {
+    const result = await client
+      .db("gatemate")
+      .collection(getCollectionName(document))
+      .insertOne(document);
+    console.log(
+      `New listing created with the following id: ${result.insertedId}`
+    );
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+// Passing in what we want to search for (query (i.e email for user))
+async function readDoc(document: validDBType, query: any) {
+  try {
+    const result = await client
+      .db("gatemate")
+      .collection(getCollectionName(document))
+      .findOne(query);
+    if (result) {
+      console.log("Found a listing in the collection:");
+      console.log(result);
+      return result;
+    } else {
+      console.log("No listings found");
+      return undefined;
     }
-  
-    console.error("Document is not a valid DB type.")
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
 }
 
-// Used to test if you can connect to the database. This is a good way to see if your username and password 
-// are correct. 
-async function pingDB(client: typeof MongoClient) {
-    try {
-      await client.connect();
-
-      // Send a ping to confirm a successful connection
-      await client.db("admin").command({ ping: 1 });
-      console.log("Pinged your deployment. You successfully connected to MongoDB!");
-    } catch(e) {
-        console.error(e); 
-    } 
-}  
-
-async function createDoc(client: typeof MongoClient, document: validDBType) {
-    try {
-        await client.connect(); 
-        const result = await client.db("gatemate")
-                    .collection(getCollectionName(document))
-                    .insertOne(document); 
-        console.log(`New listing created with the following id: ${result.insertedId}`);
-    } catch(e) {
-        console.error(e); 
-    } 
+async function updateDoc(
+  documentOriginal: validDBType,
+  documentReplacement: validDBType
+) {
+  try {
+    await client
+      .db("gatemate")
+      .collection(getCollectionName(documentOriginal))
+      .replaceOne(documentOriginal, documentReplacement);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-async function readDoc(client: typeof MongoClient, document: validDBType) {
-    try {
-        await client.connect(); 
-        const result = await client.db("gatemate")
-                    .collection(getCollectionName(document))
-                    .findOne(document); 
-        if (result) {
-        console.log('Found a listing in the collection:');
-        console.log(result);
-        } else {
-        console.log('No listings found');
-        }
-    } catch(e) {
-        console.error(e); 
-    } 
+async function deleteDoc(document: validDBType) {
+  try {
+    const result = await client
+      .db("gatemate")
+      .collection(getCollectionName(document))
+      .deleteOne(document);
+    console.log(`${result.deletedCount} document(s) was/were deleted.`);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
-async function updateDoc(client: typeof MongoClient, documentOriginal: validDBType, documentReplacement: validDBType) {
-    try {
-        await client.connect(); 
-        await client.db("gatemate")
-                    .collection(documentOriginal.collectionName)
-                    .replaceOne(documentOriginal, documentReplacement); 
-    } catch(e) {
-        console.error(e); 
-    } 
-}
-
-async function deleteDoc(client: typeof MongoClient, document: validDBType) {
-    try {
-        await client.connect(); 
-        const result = await client.db("gatemate")
-                    .collection(getCollectionName(document))
-                    .deleteOne(document); 
-        console.log(`${result.deletedCount} document(s) was/were deleted.`);
-    } catch(e) {
-        console.error(e); 
-    } finally {
-        await client.close(); 
-    }
-}
-
-
-
-//TODO This is where calls to our database will be made
-type WeatherData = {
-    city: string;
-    temperature: number;
-    humidity: number;
-}
-
-export const fetchWeatherData = async (query = ""): Promise < WeatherData[] > => {
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
-    const weatherData = [
-        {
-            "city": "New York",
-            "temperature": 25,
-            "humidity": 70
-        },
-        {
-            "city": "London",
-            "temperature": 18,
-            "humidity": 80
-        },
-        {
-            "city": "Tokyo",
-            "temperature": 30,
-            "humidity": 60
-        },
-        {
-            "city": "Paris",
-            "temperature": 22,
-            "humidity": 75
-        },
-        {
-            "city": "Sydney",
-            "temperature": 28,
-            "humidity": 65
-        },
-    ]
-
-    return weatherData;
-}
+export {
+  connect,
+  getClient,
+  close,
+  pingDB,
+  createDoc,
+  readDoc,
+  updateDoc,
+  deleteDoc,
+};
