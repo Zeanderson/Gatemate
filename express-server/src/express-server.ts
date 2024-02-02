@@ -2,6 +2,7 @@ import express from "express";
 import homeRouter from "./controllers/weather";
 import dotenv from "dotenv";
 dotenv.config();
+import session from "express-session";
 import userRouter from "./controllers/userController";
 import { connect } from "./datasources/db";
 
@@ -14,6 +15,15 @@ const app = express();
 connect();
 
 // Middleware goes here -- IF it does not go above routes it will not work ;)
+app.use(
+  session({
+    secret: process.env.session_secret || "",
+    resave: false,
+    saveUninitialized: false,
+    //Max age 7 days
+    cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
+  })
+);
 app.use(express.json());
 
 //TODO app.use('/api/v1/login', loginController);

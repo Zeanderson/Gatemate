@@ -11,7 +11,17 @@ const userRouter = Router();
     
 */
 
+declare module "express-session" {
+  interface Session {
+    user?: User;
+  }
+}
+
 userRouter.post("/login", async (req, res) => {
+  if (req.session.user) {
+    res.status(200).send({ message: "User already logged in" });
+    return;
+  }
   const user: User = req.body;
 
   try {
@@ -28,6 +38,11 @@ userRouter.post("/login", async (req, res) => {
       const verified = await verifyPassword(user, existingUser.password);
 
       if (verified) {
+        req.session.user = {
+          email: existingUser.email,
+          collectionName: "User",
+          password: existingUser.password,
+        };
         res.status(200).send({ message: "Login successful" });
       } else {
         res.status(401).send({ message: "Login failed" });
@@ -63,7 +78,7 @@ userRouter.post("/register", async (req, res) => {
         collectionName: "User",
       });
 
-      res.status(201).send({ message: "User added to the database" });
+      res.status(201).send({ message: "User Created" });
     }
   } catch (error) {
     console.error(error);
