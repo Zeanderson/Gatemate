@@ -7,6 +7,8 @@ import GLMap from '../components/Map';
 import ClipLoader from "react-spinners/ClipLoader";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGripLinesVertical, faTemperatureHalf, faDroplet } from '@fortawesome/free-solid-svg-icons';
+import AnalysisBox from '../components/Analysis';
+
 
 type dailyWeather = {
     summary: string,
@@ -145,7 +147,7 @@ function Header() {
     )
 }
 
-function FieldMap() {
+function Map() {
     return (
         <div className='flex flex-col gap-2'>
             <div>
@@ -158,7 +160,7 @@ function FieldMap() {
 function FieldAnalysis() {
     return (
         <div>
-            <h1>{"Field Analysis"}</h1>
+            <AnalysisBox />
         </div>
     )
 }
@@ -167,7 +169,7 @@ function Body() {
     return (
         <div className={'flex flex-row gap-2 font-Arvo font-bold min-h-2xl'}>
             <div className={'bg-indigo-950 items-center rounded-xl p-5 basis-2/3'}>
-                <FieldMap />
+                <Map />
             </div>
             <div className={'bg-indigo-950 items-center rounded-xl p-5 basis-1/3'}>
                 <FieldAnalysis />

@@ -3,6 +3,9 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWheatAwn } from '@fortawesome/free-solid-svg-icons';
 
+//TODO Make the Markers a new component with props for (longitude, latitude, field name, field color)
+//TODO make ability to add markers to map
+
 function GLMap() {
     return (
         <div>
@@ -15,7 +18,7 @@ function GLMap() {
                     zoom: 14,
                 }}
                 style={{ width: 1300, height: 650, borderRadius: '15px', overflow: 'hidden'}}
-                mapStyle="mapbox://styles/mapbox/outdoors-v12"
+                mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
             >
                 <Marker
                     style={{ position:'absolute'}}
