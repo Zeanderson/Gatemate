@@ -1,15 +1,29 @@
 import express from "express";
 import homeRouter from "./controllers/weather";
 import dotenv from "dotenv";
-import userRouter from "./controllers/userController";
 dotenv.config();
+import session from "express-session";
+import userRouter from "./controllers/userController";
+import { connect } from "./datasources/db";
 
 //TODO Needs to be in ENV file
 const PORT = 4001;
 
 const app = express();
 
+//Connecting to the database once and reusing the connection
+connect();
+
 // Middleware goes here -- IF it does not go above routes it will not work ;)
+app.use(
+  session({
+    secret: process.env.session_secret || "",
+    resave: false,
+    saveUninitialized: false,
+    //Max age 7 days
+    cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
+  })
+);
 app.use(express.json());
 
 //TODO app.use('/api/v1/login', loginController);
