@@ -1,23 +1,21 @@
 import { useState } from "react";
-import { ChangeEvent } from "react";
+import axios from "axios";
 
-function submitUser(user: string, pass: string) {
-    console.log(user)
-    console.log(pass)
-    return true
+async function registerUser(user: string, pass: string) {
+    try {
+        const response = await axios.post("/api/v1/user/register", {
+            email: user,
+            password: pass
+        });
+        console.log("Response: " + response);
+    } catch (error) {
+        console.error("Error:", error);
+    }
 }
 
-function Signup() {
+function Register() {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-
-    const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setUsername(event.target.value);
-    };
-
-    const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setPassword(event.target.value);
-    };
 
     return (
     <div className="flex items-center justify-center h-screen">
@@ -27,15 +25,15 @@ function Signup() {
 
                 <div className="flex flex-col items-center">
                     <label className="text-lg">Username/Email</label>
-                    <input id="user" className='max-w-xs rounded-lg' value={username} onChange={handleUsernameChange} />
+                    <input id="user" className='max-w-xs rounded-lg' value={username} onChange={(event) => setUsername(event.target.value)} />
                 </div>
 
                 <div className="flex flex-col items-center">
                     <label className="text-lg">Password</label>
-                    <input id="pass" className='max-w-xs rounded-lg' type="password" value={password} onChange={handlePasswordChange} />
+                    <input id="pass" className='max-w-xs rounded-lg' type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
                 </div>
 
-                <button onClick={() => {submitUser(username,password)}} className='border border-solid rounded-xl p-1 max-w-[10rem] mx-auto hover:bg-blue-500 hover:border-none'>Sign Up</button>
+                <button onClick={() => {registerUser(username,password)}} className='border border-solid rounded-xl p-1 max-w-[10rem] mx-auto hover:bg-blue-500 hover:border-none'>Sign Up</button>
             </div>
 
             <a className='flex max-w-[10rem] mx-auto' href="/">
@@ -46,4 +44,4 @@ function Signup() {
     )
 }
 
-export default Signup;
+export default Register;

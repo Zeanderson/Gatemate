@@ -7,7 +7,7 @@ import Home from './routes/Home'
 import FieldPage from './routes/FieldPage'
 import ErrorPage from './routes/ErrorPage'
 import Signin from "./routes/SignIn"
-import Signup from "./routes/SignUp"
+import Register from "./routes/SignUp"
 
 const router = createBrowserRouter([
   {
@@ -16,7 +16,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/signup",
-    Component: Signup
+    Component: Register
   },
   {
     path: "/home",

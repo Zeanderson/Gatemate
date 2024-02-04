@@ -22,6 +22,7 @@ userRouter.post("/login", async (req, res) => {
     res.status(200).send({ message: "User already logged in" });
     return;
   }
+
   const user: User = req.body;
 
   try {
