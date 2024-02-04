@@ -90,6 +90,21 @@ userRouter.post("/register", async (req, res) => {
   }
 });
 
+userRouter.get("/logout", async (req, res) => {
+  if (req.session.user === undefined) {
+    res.status(200).send({ message: "No user logged in" });
+    return;
+  }
+  req.session.destroy((err) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send({ message: "Internal server error" });
+    } else {
+      res.status(200).send({ message: "User logged out" });
+    }
+  });
+});
+
 /*
 
     * Password hashing helper functions
