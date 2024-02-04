@@ -19,7 +19,7 @@ declare module "express-session" {
 
 userRouter.post("/login", async (req, res) => {
   if (req.session.user) {
-    res.status(200).send({ message: "User already logged in" });
+    res.status(200).send({ message: "User already logged in", user: req.session.user.email });
     return;
   }
 
