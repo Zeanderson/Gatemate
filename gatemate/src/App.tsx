@@ -1,13 +1,10 @@
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom"
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import Home from './routes/Home'
-import FieldPage from './routes/FieldPage'
-import ErrorPage from './routes/ErrorPage'
-import Signin from "./routes/SignIn"
-import Register from "./routes/SignUp"
+import Home from "./routes/Home";
+import FieldPage from "./routes/FieldPage";
+import ErrorPage from "./routes/ErrorPage";
+import Signin from "./routes/SignIn";
+import Register from "./routes/SignUp";
 
 const router = createBrowserRouter([
   {
@@ -16,11 +13,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/signup",
-    Component: Register
+    Component: Register,
   },
   {
     path: "/home",
-    Component: Home
+    Component: Home,
   },
   {
     path: "/field",
@@ -29,15 +26,15 @@ const router = createBrowserRouter([
   {
     path: "*",
     Component: ErrorPage,
-  }
-])
+  },
+]);
 
 function App() {
   return (
     <div>
       <RouterProvider router={router} />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
