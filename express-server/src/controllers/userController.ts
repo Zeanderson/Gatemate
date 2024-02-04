@@ -17,15 +17,15 @@ declare module "express-session" {
   }
 }
 
-userRouter.post("/login", async (req, res) => {
+userRouter.get("/session", async (req, res) => {
   if (req.session.user) {
-    res.status(200).send({
-      message: "User already logged in",
-      user: req.session.user.email,
-    });
-    return;
+    res.send({user: req.session.user.email, status: "200"});
+  } else {
+    res.send({status: "404"});
   }
+})
 
+userRouter.post("/login", async (req, res) => {
   const user: User = req.body;
 
   try {
@@ -47,12 +47,12 @@ userRouter.post("/login", async (req, res) => {
           collectionName: "User",
           password: existingUser.password,
         };
-        res.status(200).send({ message: "Login successful" });
+        res.send({ message: "Login successful", status: "200" });
       } else {
-        res.status(401).send({ message: "Login failed" });
+        res.send({ message: "Login failed", status: "404" });
       }
     } else {
-      res.status(401).send({ message: "User not found" });
+      res.send({ message: "User not found", status: "404"});
     }
   } catch (error) {
     console.error(error);
@@ -73,7 +73,7 @@ userRouter.post("/register", async (req, res) => {
     );
 
     if (existingUser) {
-      res.status(400).send({ message: "User already exists" });
+      res.send({ message: "User already exists", status: "400" });
     } else {
       const hashedPassword = await hashPassword(user);
       await createDoc({
@@ -82,7 +82,7 @@ userRouter.post("/register", async (req, res) => {
         collectionName: "User",
       });
 
-      res.status(201).send({ message: "User Created" });
+      res.send({ message: "User Created", status:"201" });
     }
   } catch (error) {
     console.error(error);
