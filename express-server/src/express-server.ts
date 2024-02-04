@@ -1,5 +1,5 @@
 import express from "express";
-import homeRouter from "./controllers/weather";
+import homeRouter from "./controllers/weatherController";
 import dotenv from "dotenv";
 dotenv.config();
 import session from "express-session";
