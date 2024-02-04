@@ -19,7 +19,10 @@ declare module "express-session" {
 
 userRouter.post("/login", async (req, res) => {
   if (req.session.user) {
-    res.status(200).send({ message: "User already logged in", user: req.session.user.email });
+    res.status(200).send({
+      message: "User already logged in",
+      user: req.session.user.email,
+    });
     return;
   }
 
@@ -85,6 +88,21 @@ userRouter.post("/register", async (req, res) => {
     console.error(error);
     res.status(500).send({ message: "Internal server error" });
   }
+});
+
+userRouter.get("/logout", async (req, res) => {
+  if (req.session.user === undefined) {
+    res.status(200).send({ message: "No user logged in" });
+    return;
+  }
+  req.session.destroy((err) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send({ message: "Internal server error" });
+    } else {
+      res.status(200).send({ message: "User logged out" });
+    }
+  });
 });
 
 /*
