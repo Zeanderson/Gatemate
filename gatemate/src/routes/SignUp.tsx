@@ -26,7 +26,7 @@ function Register() {
             <label className="text-lg">Username/Email</label>
             <input
               id="user"
-              className="max-w-xs rounded-lg"
+              className="max-w-xs rounded-lg p-2 "
               value={username}
               onChange={(event) => setUsername(event.target.value)}
             />
@@ -36,7 +36,7 @@ function Register() {
             <label className="text-lg">Password</label>
             <input
               id="pass"
-              className="max-w-xs rounded-lg"
+              className="max-w-xs rounded-lg p-2 "
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
