@@ -12,6 +12,14 @@ import {
   faDroplet,
 } from "@fortawesome/free-solid-svg-icons";
 import AnalysisBox from "../components/Analysis";
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxPopover,
+  ComboboxList,
+  ComboboxOption,
+} from "@reach/combobox";
+import "@reach/combobox/styles.css";
 
 type dailyWeather = {
   summary: string;
@@ -93,36 +101,42 @@ function Header() {
 
   return (
     <div className={"flex flex-row gap-2 font-Arvo font-bold"}>
-      <WeatherBanner className={"flex flex-row gap-8 basis-5/6 "}>
+      <WeatherBanner className={"flex flex-row gap-8 basis-11/12 "}>
         <FontAwesomeIcon icon={faGripLinesVertical} size={"2xl"} />
         <div className={"flex flex-col items-center gap-1 text-xs"}>
-          <button
-            className={`border border-solid border-gray-500 rounded-xl p-2 hover:bg-blue-500 ${weatherArea === "Fayetteville" ? "bg-blue-500" : ""
-              }`}
-            onClick={() => setWeatherArea("Fayetteville")}
-          >
-            Fayetteville, AR
-          </button>
-          <button
-            className={`border border-solid border-gray-500 rounded-xl p-2 hover:bg-blue-500 ${weatherArea === "Simsboro" ? "bg-blue-500" : ""
-              }`}
-            onClick={() => setWeatherArea("Simsboro")}
-          >
-            Simsboro, AR{" "}
-          </button>
-          <button
-            className={`border border-solid border-gray-500 rounded-xl p-2 hover:bg-blue-500 ${weatherArea === "Magnolia" ? "bg-blue-500" : ""
-              }`}
-            onClick={() => setWeatherArea("Magnolia")}
-          >
-            Magnolia, AR{" "}
-          </button>
+          <Combobox className="max-w-xs" openOnFocus={true}>
+            <ComboboxInput
+              className="bg-slate-700 rounded-xl p-2"
+              placeholder={"Fayetteville"}
+            />
+            <ComboboxPopover className="bg-slate-700 border-solid rounded-lg border-white p-2">
+              <ComboboxList defaultValue={"Hello"}>
+                <ComboboxOption
+                  className="hover:bg-slate-500 rounded-md"
+                  value="Fayetteville"
+                  onClick={() => {
+                    setWeatherArea("Fayetteville");
+                  }}
+                />
+                <ComboboxOption
+                  className="hover:bg-slate-500 rounded-md"
+                  value="Simsboro"
+                  onClick={() => setWeatherArea("Simsboro")}
+                />
+                <ComboboxOption
+                  className="hover:bg-slate-500 rounded-md"
+                  value="Magnolia"
+                  onClick={() => setWeatherArea("Magnolia")}
+                />
+              </ComboboxList>
+            </ComboboxPopover>
+          </Combobox>
         </div>
         <FontAwesomeIcon icon={faGripLinesVertical} size={"2xl"} />
         {weatherArea === "Fayetteville" ? (
           <div className="flex flex-row gap-6 items-center">
             <FontAwesomeIcon icon={faTemperatureHalf} size={"2x"} />
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-row gap-1">
               <p>{"High: " + fayWeather[0].temp.max + "°F"}</p>
               <p>{"Low: " + fayWeather[0].temp.min + "°F"}</p>
               <p>{"Feels Like: " + fayWeather[0].feels_like.day + "°F"}</p>
@@ -140,7 +154,7 @@ function Header() {
         {weatherArea === "Simsboro" ? (
           <div className="flex flex-row gap-6 items-center">
             <FontAwesomeIcon icon={faTemperatureHalf} size={"2x"} />
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-row gap-1">
               <p>{"High: " + simWeather[0].temp.max + "°F"}</p>
               <p>{"Low: " + simWeather[0].temp.min + "°F"}</p>
               <p>{"Feels Like: " + simWeather[0].feels_like.day + "°F"}</p>
@@ -158,7 +172,7 @@ function Header() {
         {weatherArea === "Magnolia" ? (
           <div className="flex flex-row gap-6 items-center">
             <FontAwesomeIcon icon={faTemperatureHalf} size={"2x"} />
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-row gap-1">
               <p>{"High: " + magWeather[0].temp.max + "°F"}</p>
               <p>{"Low: " + magWeather[0].temp.min + "°F"}</p>
               <p>{"Feels Like: " + magWeather[0].feels_like.day + "°F"}</p>
@@ -173,12 +187,7 @@ function Header() {
           </div>
         ) : null}
       </WeatherBanner>
-      <UserBanner
-        userName={"Farmer Jeff"}
-        settingsLink={"/"}
-        signOutLink={"/"}
-        className={"basis-1/6"}
-      />
+      <UserBanner userName={"Welcome Jeremiah"} className={"basis-1/12"} />
     </div>
   );
 }
@@ -218,7 +227,7 @@ function Body() {
 // We only want to render the data, so we create a new component called Weather that will handle the logic and rendering of the data ( This keeps organzation clean, and debugging easy )
 
 function Home() {
-  const session = checkSession()
+  const session = checkSession();
 
   if (session.isLoading || session.data === undefined) {
     return <ClipLoader />;
