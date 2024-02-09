@@ -92,7 +92,7 @@ userRouter.post("/register", async (req, res) => {
 
 userRouter.get("/logout", async (req, res) => {
   if (req.session.user === undefined) {
-    res.status(200).send({ message: "No user logged in" });
+    res.send({ message: "No user logged in", status: "200"});
     return;
   }
   req.session.destroy((err) => {
@@ -100,7 +100,7 @@ userRouter.get("/logout", async (req, res) => {
       console.error(err);
       res.status(500).send({ message: "Internal server error" });
     } else {
-      res.status(200).send({ message: "User logged out" });
+      res.send({ message: "User logged out", status:"200" });
     }
   });
 });

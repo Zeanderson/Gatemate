@@ -108,6 +108,7 @@ function Header() {
             <ComboboxInput
               className="bg-slate-700 rounded-xl p-2"
               placeholder={"Fayetteville"}
+              spellCheck={false}
             />
             <ComboboxPopover className="bg-slate-700 border-solid rounded-lg border-white p-2">
               <ComboboxList defaultValue={"Hello"}>
@@ -213,10 +214,10 @@ function FieldAnalysis() {
 function Body() {
   return (
     <div className={"flex flex-row gap-2 font-Arvo font-bold min-h-2xl"}>
-      <div className={"bg-indigo-950 items-center rounded-xl p-5 basis-2/3"}>
+      <div className={"bg-indigo-950 items-center rounded-xl p-5 basis-4/5"}>
         <Map />
       </div>
-      <div className={"bg-indigo-950 items-center rounded-xl p-5 basis-1/3"}>
+      <div className={"bg-indigo-950 items-center rounded-xl p-5 basis-1/5"}>
         <FieldAnalysis />
       </div>
     </div>
