@@ -195,18 +195,8 @@ function Header() {
 
 function Map() {
   return (
-    // <div className="flex flex-col gap-2">
     <div>
       <GLMap />
-    </div>
-    // {/* </div> */}
-  );
-}
-
-function FieldAnalysis() {
-  return (
-    <div>
-      <AnalysisBox />
     </div>
   );
 }
@@ -217,8 +207,8 @@ function Body() {
       <div className="border-4 border-solid rounded-3xl border-Corp3">
         <Map />
       </div>
-      <div className={"items-center rounded-xl p-5  bg-Corp3"}>
-        <FieldAnalysis />
+      <div className={"items-center rounded-xl p-5 bg-Corp3"}>
+        <AnalysisBox />
       </div>
     </div>
   );
