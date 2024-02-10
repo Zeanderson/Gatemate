@@ -106,11 +106,11 @@ function Header() {
         <div className={"flex flex-col items-center gap-1 text-xs"}>
           <Combobox className="max-w-xs" openOnFocus={true}>
             <ComboboxInput
-              className="bg-slate-700 rounded-xl p-2"
+              className="bg-Corp2 rounded-md p-2"
               placeholder={"Fayetteville"}
               spellCheck={false}
             />
-            <ComboboxPopover className="bg-slate-700 border-solid rounded-lg border-white p-2">
+            <ComboboxPopover className="bg-Corp2 p-2">
               <ComboboxList defaultValue={"Hello"}>
                 <ComboboxOption
                   className="hover:bg-slate-500 rounded-md"
@@ -195,11 +195,11 @@ function Header() {
 
 function Map() {
   return (
-    <div className="flex flex-col gap-2">
-      <div>
-        <GLMap />
-      </div>
+    // <div className="flex flex-col gap-2">
+    <div>
+      <GLMap />
     </div>
+    // {/* </div> */}
   );
 }
 
@@ -213,11 +213,11 @@ function FieldAnalysis() {
 
 function Body() {
   return (
-    <div className={"flex flex-row gap-2 font-Arvo font-bold min-h-2xl"}>
-      <div className={"bg-indigo-950 items-center rounded-xl p-5 basis-4/5"}>
+    <div className={"flex flex-row gap-2 font-Arvo font-bold"}>
+      <div className="border-4 border-solid rounded-3xl border-Corp3">
         <Map />
       </div>
-      <div className={"bg-indigo-950 items-center rounded-xl p-5 basis-1/5"}>
+      <div className={"items-center rounded-xl p-5  bg-Corp3"}>
         <FieldAnalysis />
       </div>
     </div>

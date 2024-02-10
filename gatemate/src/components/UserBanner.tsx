@@ -26,7 +26,7 @@ export function UserBanner(props: BannerProps) {
   return (
     <div
       className={
-        "flex flex-row rounded-xl bg-indigo-950 gap-2 py-2 pl-5 pr-5 items-center relative max-h-0.5" +
+        "flex flex-row rounded-xl bg-Corp3 gap-2 py-2 pl-5 pr-5 items-center relative max-h-0.5" +
         props.className
       }
     >
@@ -39,7 +39,7 @@ export function UserBanner(props: BannerProps) {
         <FontAwesomeIcon icon={faBars} />
       </button>
       {dropdownVisible && (
-        <div className="flex flex-col absolute right-12 bg-slate-700 rounded shadow-lg p-1 min-w-[10rem] items-center">
+        <div className="flex flex-col absolute right-12 bg-Corp2 rounded shadow-lg p-1 min-w-[10rem] items-center">
           <button
             className="flex gap-1 items-center"
             onClick={() => {
