@@ -6,10 +6,10 @@ import backgroundImage from "../images/agri-vector.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWheatAwn } from "@fortawesome/free-solid-svg-icons";
 
-async function checkAuth(user: string, pass: string) {
+async function checkAuth(email: string, pass: string) {
   try {
     const response = await axios.post("/api/v1/user/login", {
-      email: user,
+      email: email,
       password: pass,
     });
     return response.data;
@@ -30,7 +30,7 @@ function checkSession() {
 }
 
 function Signin() {
-  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [shown, setShown] = useState<boolean>(false);
 
@@ -65,26 +65,23 @@ function Signin() {
               <h1 className="text-3xl text-center">Gatemate</h1>
             </div>
             <div className="flex flex-col gap-4">
-              <div className="flex flex-col items-center">
-                <input
-                  id="user"
-                  placeholder="Username"
-                  className="max-w-xs rounded-lg p-2 bg-slate-300 text-black"
-                  value={username}
-                  onChange={(event) => setUsername(event.target.value)}
-                />
-              </div>
+              <input
+                id="email"
+                placeholder="Email"
+                className="max-w-xs rounded-lg p-2 bg-slate-300 text-black"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
 
-              <div className="flex flex-col items-center">
-                <input
-                  id="pass"
-                  placeholder="Password"
-                  className="max-w-xs rounded-lg p-2 bg-slate-300 text-black"
-                  type="password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                />
-              </div>
+              <input
+                id="pass"
+                placeholder="Password"
+                className="max-w-xs rounded-lg p-2 bg-slate-300 text-black"
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
+
               {shown ? (
                 <p className="text-red-500">Invalid credintials</p>
               ) : null}
@@ -92,9 +89,9 @@ function Signin() {
 
             <button
               onClick={() => {
-                checkAuth(username, password).then((data) => {
+                checkAuth(email, password).then((data) => {
                   if (data.status === "200") {
-                    window.location.href = `/home?user=${username}`;
+                    window.location.href = `/home?user=${email}`;
                   }
                   if (data.status === "404") {
                     setShown(true);
