@@ -1,7 +1,7 @@
-import { User } from "../types";
+import { IDailyWeather, IWeatherData, IUser } from "../interfaces";
+import { DailyWeather, WeatherData, User } from "../models"; 
 import { Router } from "express";
 import * as argon2 from "argon2";
-import { readDoc, createDoc } from "../datasources/db";
 
 const userRouter = Router();
 
@@ -13,7 +13,7 @@ const userRouter = Router();
 
 declare module "express-session" {
   interface Session {
-    user?: User;
+    user?: IUser;
   }
 }
 
@@ -26,17 +26,9 @@ userRouter.get("/session", async (req, res) => {
 })
 
 userRouter.post("/login", async (req, res) => {
-  const user: User = req.body;
-
   try {
-    const existingUser = await readDoc(
-      {
-        email: user.email,
-        password: user.password,
-        collectionName: "User",
-      },
-      { email: user.email }
-    );
+    const user: IUser = req.body;
+    const existingUser = await User.findOne({ 'email': user.email }); 
 
     if (existingUser) {
       const verified = await verifyPassword(user, existingUser.password);
@@ -44,7 +36,6 @@ userRouter.post("/login", async (req, res) => {
       if (verified) {
         req.session.user = {
           email: existingUser.email,
-          collectionName: "User",
           password: existingUser.password,
         };
         res.send({ message: "Login successful", status: "200" });
@@ -62,25 +53,20 @@ userRouter.post("/login", async (req, res) => {
 
 userRouter.post("/register", async (req, res) => {
   try {
-    const user: User = req.body;
-    const existingUser = await readDoc(
-      {
-        email: user.email,
-        password: user.password,
-        collectionName: "User",
-      },
-      { email: user.email }
-    );
+    const user: IUser = req.body;
+    const existingUser = await User.findOne({ 'email': user.email }); 
 
     if (existingUser) {
       res.send({ message: "User already exists", status: "400" });
     } else {
       const hashedPassword = await hashPassword(user);
-      await createDoc({
-        ...user,
-        password: hashedPassword,
-        collectionName: "User",
-      });
+
+      await User.create(
+        {
+          email: user.email, 
+          password: hashedPassword, 
+        }
+      ); 
 
       res.send({ message: "User Created", status:"201" });
     }
@@ -111,7 +97,7 @@ userRouter.get("/logout", async (req, res) => {
 */
 
 // Use when creating a new user
-let hashPassword = async (user: User): Promise<string> => {
+let hashPassword = async (user: IUser): Promise<string> => {
   try {
     const hashedPassword: string = await argon2.hash(user.password);
     return hashedPassword;
@@ -123,7 +109,7 @@ let hashPassword = async (user: User): Promise<string> => {
 
 // Use when trying to login
 let verifyPassword = async (
-  user: User,
+  user: IUser,
   hashedPassword: string
 ): Promise<boolean> => {
   try {
