@@ -7,9 +7,13 @@ import GLMap from "../components/Map";
 import ClipLoader from "react-spinners/ClipLoader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faGripLinesVertical,
-  faTemperatureHalf,
-  faDroplet,
+  faSun,
+  faCloudSun,
+  faCloudRain,
+  faSnowflake,
+  faCloudBolt,
+  faCloudShowersHeavy,
+  faCloudSunRain,
 } from "@fortawesome/free-solid-svg-icons";
 import AnalysisBox from "../components/Analysis";
 import {
@@ -112,9 +116,44 @@ function Header() {
           </Combobox>
         </div>
         {weatherArea === "Fayetteville" ? (
-          <div className="flex flex-row gap-6 items-center">
-            <p>{fayWeather[0].temp.day + " ℉"}</p>
-            <p>{fayWeather[0].rain * 100 + "% chance of rainfall"}</p>
+          <div className="flex flex-row gap-14 items-center">
+            {/* <p>{fayWeather[0].temp.day + " ℉"}</p>
+            <p>{fayWeather[0].rain * 100 + "% chance of rainfall"}</p> */}
+            <div className="flex flex-col text-sm items-center gap-1">
+              <p>{"Sat"}</p>
+              <FontAwesomeIcon icon={faSun} />
+              <p>{fayWeather[0].temp.day + " ℉"}</p>
+            </div>
+            <div className="flex flex-col text-sm items-center gap-1">
+              <p>{"Mon"}</p>
+              <FontAwesomeIcon icon={faCloudSun} />
+              <p>{fayWeather[0].temp.day + " ℉"}</p>
+            </div>
+            <div className="flex flex-col text-sm items-center gap-1 border border-solid border-Corp1 p-1 rounded-xl">
+              <p>{"Tues"}</p>
+              <FontAwesomeIcon icon={faCloudRain} />
+              <p>{fayWeather[0].temp.day + " ℉"}</p>
+            </div>
+            <div className="flex flex-col text-sm items-center gap-1">
+              <p>{"Wed"}</p>
+              <FontAwesomeIcon icon={faCloudBolt} />
+              <p>{fayWeather[0].temp.day + " ℉"}</p>
+            </div>
+            <div className="flex flex-col text-sm items-center gap-1">
+              <p>{"Thurs"}</p>
+              <FontAwesomeIcon icon={faSnowflake} />
+              <p>{fayWeather[0].temp.day + " ℉"}</p>
+            </div>
+            <div className="flex flex-col text-sm items-center gap-1">
+              <p>{"Fri"}</p>
+              <FontAwesomeIcon icon={faCloudShowersHeavy} />
+              <p>{fayWeather[0].temp.day + " ℉"}</p>
+            </div>
+            <div className="flex flex-col text-sm items-center gap-1">
+              <p>{"Sat"}</p>
+              <FontAwesomeIcon icon={faCloudSunRain} />
+              <p>{fayWeather[0].temp.day + " ℉"}</p>
+            </div>
           </div>
         ) : null}
 
