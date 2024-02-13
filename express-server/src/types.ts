@@ -31,11 +31,16 @@
 */
 
 type collectionName = {
-  collectionName: string 
-}
+  collectionName: string;
+};
 
-export type validDBType           =   dailyWeather |  weatherData |  User; 
-export const validCollectionNames = ["dailyWeather", "weatherData", "User"]; 
+export type validDBType = dailyWeather | weatherData | User;
+export const validCollectionNames = [
+  "dailyWeather",
+  "weatherData",
+  "User",
+  "CleanedDailyWeather",
+];
 
 export type dailyWeather = collectionName & {
   dt: number;
@@ -74,30 +79,42 @@ export type dailyWeather = collectionName & {
   uvi: number;
 };
 
+export type CleanedDailyWeather = collectionName & {
+  date: number;
+  temp: {
+    day: number;
+    min: number;
+    max: number;
+  };
+  description: string;
+  rain: number;
+  pop: number;
+};
+
 export type weatherData = collectionName & {
   presentDay: {
-    weather: dailyWeather;
+    weather: CleanedDailyWeather;
   };
   day1: {
-    weather: dailyWeather;
+    weather: CleanedDailyWeather;
   };
   day2: {
-    weather: dailyWeather;
+    weather: CleanedDailyWeather;
   };
   day3: {
-    weather: dailyWeather;
+    weather: CleanedDailyWeather;
   };
   day4: {
-    weather: dailyWeather;
+    weather: CleanedDailyWeather;
   };
   day5: {
-    weather: dailyWeather;
+    weather: CleanedDailyWeather;
   };
   day6: {
-    weather: dailyWeather;
+    weather: CleanedDailyWeather;
   };
   day7: {
-    weather: dailyWeather;
+    weather: CleanedDailyWeather;
   };
 };
 
