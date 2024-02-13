@@ -1,8 +1,8 @@
 import { Schema, model } from 'mongoose';
 import {
-    IDailyWeather, IWeatherData, IUser, 
-    IDailyWeatherDoc, IWeatherDataDoc, IUserDoc, 
-    IDailyWeatherModel, IWeatherDataModel, IUserModel 
+    IDailyWeather, IWeatherData, IUser, IGate, ITrafficReturn, 
+    IDailyWeatherDoc, IWeatherDataDoc, IUserDoc, IGateDoc, ITrafficReturnDoc, 
+    IDailyWeatherModel, IWeatherDataModel, IUserModel, IGateModel, ITrafficReturnModel 
 }
 from './interfaces'; 
 
@@ -119,6 +119,33 @@ const UserSchema = new Schema<IUserDoc>(
     }
 );
 
+const GateSchema = new Schema<IGateDoc>(
+    {
+        idealWaterLevel: Number,
+        threshold: Number,
+        actualWaterLevel: Number,
+        connectionError: Schema.Types.Boolean,
+        lowBattery: Schema.Types.Boolean,
+        status: String
+    }, 
+    {
+        strict: "throw", 
+        strictQuery: false 
+    }
+); 
+
+const TrafficReturnSchema = new Schema<ITrafficReturnDoc>(
+    {
+        userId: Number,
+        fieldId: Number,
+        gates: [GateSchema],
+    }, 
+    {
+        strict: "throw", 
+        strictQuery: false 
+    }
+);
+
 // * Static Method Definitions 
 
 DailyWeatherSchema.statics.buildDailyWeather = (args: IDailyWeather) => {
@@ -133,8 +160,18 @@ UserSchema.statics.buildUser = (args: IUser) => {
     return new User(args); 
 }
 
+GateSchema.statics.buildGate = (args: IGate) => {
+    return new Gate(args); 
+}
+
+TrafficReturnSchema.statics.buildTrafficReturn = (args: ITrafficReturn) => {
+    return new TrafficReturn(args); 
+}
+
 //* Model Instantiations 
 
 export const DailyWeather = model<IDailyWeatherDoc, IDailyWeatherModel>("daily_weather", DailyWeatherSchema);
 export const WeatherData = model<IWeatherDataDoc, IWeatherDataModel>("weather_data", WeatherDataSchema); 
 export const User = model<IUserDoc, IUserModel>("users", UserSchema); 
+export const Gate = model<IGateDoc, IGateModel>("gates", GateSchema); 
+export const TrafficReturn = model<ITrafficReturnDoc, ITrafficReturnModel>("traffic_returns", TrafficReturnSchema); 

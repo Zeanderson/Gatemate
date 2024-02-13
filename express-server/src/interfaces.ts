@@ -98,11 +98,28 @@ export interface IUser {
   password: string;
 };
 
+export interface IGate {
+  idealWaterLevel: number,
+  threshold: number,
+  actualWaterLevel: number,
+  connectionError: boolean,
+  lowBattery: boolean,
+  status: string
+}; 
+
+export interface ITrafficReturn {
+  userId: number,
+  fieldId: number,
+  gates: IGate[],
+}; 
+
 // * Document Definitions 
 
 export interface IDailyWeatherDoc  extends IDailyWeather,  Document {}; 
 export interface IWeatherDataDoc   extends IWeatherData,   Document {}; 
 export interface IUserDoc          extends IUser,          Document {}; 
+export interface IGateDoc          extends IGate,          Document {}; 
+export interface ITrafficReturnDoc extends ITrafficReturn, Document {}; 
 
 // * Model Definitions and declaration of builder methods 
 
@@ -118,3 +135,10 @@ export interface IUserModel extends Model<IUserDoc> {
   buildUser(args: IUser): IUserDoc; 
 }
 
+export interface IGateModel extends Model<IGateDoc> {
+  buildGate(args: IGate): IGateDoc; 
+}
+
+export interface ITrafficReturnModel extends Model<ITrafficReturnDoc> {
+  buildTrafficReturn(args: ITrafficReturn) : ITrafficReturnDoc; 
+}
