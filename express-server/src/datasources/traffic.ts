@@ -13,7 +13,6 @@
 // localhost:4001/api/v1/traffic/gen1
 // -------------------------------------------------------------------
 
-//! Leonard finish 
 type Gate = {
   idealWaterLevel: number,
   threshold: number,
@@ -30,19 +29,17 @@ type TrafficReturn = {
 }
 
 async function generateTraffic(userId: number, fieldId: number) {
-  // Logic goes here : )
-  // TODO: Ultimately some of these values will need to be passed in from the front end, things like the fieldID, gateID, and optionally waterLevel can be updated within the generator, or the generator can provide a value to update the waterLevel with
+  // TODO: Ultimately some of these values will need to be passed in, things like waterLevel can be updated within the generator, or the generator can provide a value to update the waterLevel with
   // TODO the status(green, yellow, red) will likely be handled by something else that is not the traffic generator but for now it is included here
-  let fieldID = 1;
-  let gateID = 69;
+  
   let idealWaterLevel = 5; // this variable would be water the farmer sets it to be and will be passed in
-  let threshold = 1; // this variable would be the maximum allowed change in water level and will be passed in
-  let actualWaterLevel = 5; // this variable would be the actual water level and will be passed in
+  let threshold = 2; // this variable would be the maximum allowed change in water level and is set by the farmer and will be passed in
+  let actualWaterLevel = idealWaterLevel; // this variable will start out as the ideal water level and will be randomly updated by the generator
   let connectionError = false;
   let lowBattery = false;
   let status = "Green";
 
-  const numOfErrors = 2; // Change this variable to however many errors we want to generate
+  const numOfErrors = 2; // Change this variable to however many errors we want to generate e.g right now it is 2 because we have connection error and low battery, if we added another error possibility we would change this to 3
   const chance = 3; // Change this variable to however often we want something to go wrong
   let randomStatus = 0;
 
@@ -50,7 +47,7 @@ async function generateTraffic(userId: number, fieldId: number) {
   //Generate change in water level
   //--------------------------------------------------------------------------------
   const changeWaterLevel = () => {
-    const randomAmount = (Math.floor(Math.random() * 10) + 1) * 0.1;
+    const randomAmount = (Math.floor(Math.random() * 15) + 1) * 0.1 * threshold;
     const directionNumber = Math.floor(Math.random() * 3) - 1; // water level: increase +1, decrease -1, or stay the same 0
     const finalChange = (randomAmount * directionNumber).toFixed(1);
     return finalChange
@@ -89,14 +86,15 @@ async function generateTraffic(userId: number, fieldId: number) {
     status = "Green"
   }
 
-  // gate = [fieldID, gateID, status, waterLevel, threshold, connectionError, lowBattery]
 
+  
+  //--------------------------------------------------------------------------------
+  // Zachs stuff - use this
+  //--------------------------------------------------------------------------------
 
-
-  // Could generate a const fieldID = math.random(ads;lfkajsd;flkj)
   const mockData = {
-    idealWaterLevel: 5,
-    threshold: 1,
+    idealWaterLevel: idealWaterLevel,
+    threshold: threshold,
     actualWaterLevel: actualWaterLevel,
     connectionError: connectionError,
     lowBattery: lowBattery,
@@ -115,9 +113,8 @@ async function generateTraffic(userId: number, fieldId: number) {
 }
 
 
-async function getTraffic() {
-  // generateTraffic (userId, fieldId)
-  const traffic: TrafficReturn = await generateTraffic(1, 69);
+async function getTraffic(userId: number, fieldId: number) {
+  const traffic: TrafficReturn = await generateTraffic(userId, fieldId);
   return traffic
 }
 
