@@ -49,7 +49,7 @@ async function getWeather(location: string) {
           },
           description: day.weather[0].description,
           //Converting rain to inches each day
-          rain: day.rain || 0,
+          rain: day.rain / 25.4 || 0,
           pop: day.pop,
         };
       }),
