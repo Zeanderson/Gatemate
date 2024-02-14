@@ -1,6 +1,5 @@
 import { Router } from "express";
 import getWeather from "../datasources/weatherData";
-import { weatherData } from "../types";
 const homeRouter = Router();
 
 homeRouter.get("/weather", async (req, res) => {
