@@ -3,7 +3,14 @@ import getTraffic from "../datasources/traffic";
 const trafficRouter = Router();
 
 trafficRouter.get("/gen1", async (req, res) => {
-  const trafficData = await getTraffic(1, 69); // TODO: Replace 1 and 69 with actual user and field IDs
+  const userId = req.query.userId;
+  const fieldId = req.query.fieldId;
+
+  if (userId === undefined || typeof(userId) !== "string" || fieldId === undefined || typeof(fieldId) !== "string"){
+    return res.send("Please enter a valid user and field ID");
+  }
+
+  const trafficData = await getTraffic(userId, fieldId);
   res.send(trafficData)
 });
 
