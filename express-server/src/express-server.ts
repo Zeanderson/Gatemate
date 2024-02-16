@@ -6,8 +6,7 @@ import session from "express-session";
 import userRouter from "./controllers/userController";
 import { connect } from "./datasources/db";
 
-//TODO Needs to be in ENV file
-const PORT = 4001;
+const PORT = Number(process.env.port);
 
 const app = express();
 

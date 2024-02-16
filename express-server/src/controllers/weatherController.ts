@@ -1,7 +1,6 @@
 import { Router } from "express";
 import getWeather from "../datasources/weatherData";
 const homeRouter = Router();
-
 homeRouter.get("/weather", async (req, res) => {
   const area = req.query.input;
   if (area === undefined || typeof area !== "string") {
