@@ -2,11 +2,14 @@ import { useState } from "react";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
+import backgroundImage from "../images/agri-vector.jpg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWheatAwn } from "@fortawesome/free-solid-svg-icons";
 
-async function checkAuth(user: string, pass: string) {
+async function checkAuth(email: string, pass: string) {
   try {
     const response = await axios.post("/api/v1/user/login", {
-      email: user,
+      email: email,
       password: pass,
     });
     return response.data;
@@ -27,7 +30,7 @@ function checkSession() {
 }
 
 function Signin() {
-  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [shown, setShown] = useState<boolean>(false);
 
@@ -45,53 +48,70 @@ function Signin() {
   // No session found
   if (session.data.status === "404") {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className={"flex flex-col gap-10 p-2"}>
-          <h1 className="text-3xl text-center">Sign In</h1>
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-col items-center">
-              <label className="text-lg">Username/Email</label>
-              <input
-                id="user"
-                className="max-w-xs rounded-lg p-2 "
-                value={username}
-                onChange={(event) => setUsername(event.target.value)}
-              />
+      <div
+        className="flex items-center justify-center h-screen font-Arvo"
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+        }}
+      >
+        <div className="bg-Corp2 rounded-3xl pt-40 pb-40 p-36 shadow-xl shadow-Nature1">
+          <div
+            className={
+              "flex flex-col gap-5 p-10 bg-Corp3 rounded-2xl shadow-inner shadow-Nature1"
+            }
+          >
+            <div className="flex flex-col items-center gap-1">
+              <FontAwesomeIcon size={"2xl"} icon={faWheatAwn} />
+              <h1 className="text-3xl text-center">Gatemate</h1>
             </div>
+            <div className="flex flex-col gap-4">
+              <input
+                id="email"
+                placeholder="Email"
+                className="max-w-xs rounded-lg p-2 bg-slate-300 text-black"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
 
-            <div className="flex flex-col items-center">
-              <label className="text-lg">Password</label>
               <input
                 id="pass"
-                className="max-w-xs rounded-lg p-2 "
+                placeholder="Password"
+                className="max-w-xs rounded-lg p-2 bg-slate-300 text-black"
                 type="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
               />
+
+              {shown ? (
+                <p className="text-red-500">Invalid credintials</p>
+              ) : null}
             </div>
-            {shown ? <p className="text-red-500">Invalid credintials</p> : null}
+
             <button
               onClick={() => {
-                checkAuth(username, password).then((data) => {
+                checkAuth(email, password).then((data) => {
                   if (data.status === "200") {
-                    window.location.href = `/home?user=${username}`;
+                    window.location.href = `/home?user=${email}`;
                   }
                   if (data.status === "404") {
                     setShown(true);
                   }
                 });
               }}
-              className="border border-solid rounded-xl p-1 max-w-[10rem] mx-auto hover:bg-blue-500 hover:border-none"
+              className="border border-solid rounded-xl p-1 hover:bg-Corp2 hover:border-Corp2"
             >
               Sign In
             </button>
-          </div>
 
-          <a className="flex max-w-[10rem] mx-auto" href="/signup">
-            <button className="border border-solid rounded-xl p-1 hover:bg-blue-500 hover:border-none">
+            <button
+              className="border border-solid rounded-xl p-1 hover:bg-Corp2 hover:border-Corp2"
+              onClick={() => {
+                window.location.href = "/signup";
+              }}
+            >
               Sign Up
             </button>
-          </a>
+          </div>
         </div>
       </div>
     );

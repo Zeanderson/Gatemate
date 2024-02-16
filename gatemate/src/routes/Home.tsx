@@ -7,9 +7,13 @@ import GLMap from "../components/Map";
 import ClipLoader from "react-spinners/ClipLoader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faGripLinesVertical,
-  faTemperatureHalf,
-  faDroplet,
+  faSun,
+  faCloudSun,
+  faCloudRain,
+  faSnowflake,
+  faCloudBolt,
+  faCloudShowersHeavy,
+  faCloudSunRain,
 } from "@fortawesome/free-solid-svg-icons";
 import AnalysisBox from "../components/Analysis";
 import {
@@ -22,36 +26,15 @@ import {
 import "@reach/combobox/styles.css";
 
 type dailyWeather = {
-  summary: string;
+  date: number;
   temp: {
     day: number;
     min: number;
     max: number;
-    night: number;
-    eve: number;
-    morn: number;
   };
-  feels_like: {
-    day: number;
-    night: number;
-    eve: number;
-    morn: number;
-  };
-  pressure: number;
-  humidity: number;
-  dew_point: number;
-  wind_speed: number;
-  weather: [
-    {
-      id: number;
-      main: string;
-      description: string;
-    }
-  ];
-  clouds: number;
-  pop: number;
+  description: string;
   rain: number;
-  uvi: number;
+  pop: number;
 };
 
 type weatherData = [dailyWeather];
@@ -102,15 +85,14 @@ function Header() {
   return (
     <div className={"flex flex-row gap-2 font-Arvo font-bold"}>
       <WeatherBanner className={"flex flex-row gap-8 basis-11/12 "}>
-        <FontAwesomeIcon icon={faGripLinesVertical} size={"2xl"} />
         <div className={"flex flex-col items-center gap-1 text-xs"}>
           <Combobox className="max-w-xs" openOnFocus={true}>
             <ComboboxInput
-              className="bg-slate-700 rounded-xl p-2"
+              className="bg-Corp2 rounded-md p-2"
               placeholder={"Fayetteville"}
               spellCheck={false}
             />
-            <ComboboxPopover className="bg-slate-700 border-solid rounded-lg border-white p-2">
+            <ComboboxPopover className="bg-Corp2 p-2">
               <ComboboxList defaultValue={"Hello"}>
                 <ComboboxOption
                   className="hover:bg-slate-500 rounded-md"
@@ -133,58 +115,59 @@ function Header() {
             </ComboboxPopover>
           </Combobox>
         </div>
-        <FontAwesomeIcon icon={faGripLinesVertical} size={"2xl"} />
         {weatherArea === "Fayetteville" ? (
-          <div className="flex flex-row gap-6 items-center">
-            <FontAwesomeIcon icon={faTemperatureHalf} size={"2x"} />
-            <div className="flex flex-row gap-1">
-              <p>{"High: " + fayWeather[0].temp.max + "°F"}</p>
-              <p>{"Low: " + fayWeather[0].temp.min + "°F"}</p>
-              <p>{"Feels Like: " + fayWeather[0].feels_like.day + "°F"}</p>
+          <div className="flex flex-row gap-14 items-center">
+            {/* <p>{fayWeather[0].temp.day + " ℉"}</p>
+            <p>{fayWeather[0].rain * 100 + "% chance of rainfall"}</p> */}
+            <div className="flex flex-col text-sm items-center gap-1">
+              <p>{"Sat"}</p>
+              <FontAwesomeIcon icon={faSun} />
+              <p>{fayWeather[0].temp.day + " ℉"}</p>
             </div>
-            <FontAwesomeIcon icon={faGripLinesVertical} size={"2xl"} />
-            <div className="flex flex-row">{fayWeather[0].summary}</div>
-            <FontAwesomeIcon icon={faGripLinesVertical} size={"2xl"} />
-            <FontAwesomeIcon icon={faDroplet} size={"2x"} />
-            <div className="flex flex-row gap-1">
-              <p>{"Chance of rain: " + fayWeather[0].pop * 100 + "%"}</p>
+            <div className="flex flex-col text-sm items-center gap-1">
+              <p>{"Mon"}</p>
+              <FontAwesomeIcon icon={faCloudSun} />
+              <p>{fayWeather[0].temp.day + " ℉"}</p>
+            </div>
+            <div className="flex flex-col text-sm items-center gap-1 border border-solid border-Corp1 p-1 rounded-xl">
+              <p>{"Tues"}</p>
+              <FontAwesomeIcon icon={faCloudRain} />
+              <p>{fayWeather[0].temp.day + " ℉"}</p>
+            </div>
+            <div className="flex flex-col text-sm items-center gap-1">
+              <p>{"Wed"}</p>
+              <FontAwesomeIcon icon={faCloudBolt} />
+              <p>{fayWeather[0].temp.day + " ℉"}</p>
+            </div>
+            <div className="flex flex-col text-sm items-center gap-1">
+              <p>{"Thurs"}</p>
+              <FontAwesomeIcon icon={faSnowflake} />
+              <p>{fayWeather[0].temp.day + " ℉"}</p>
+            </div>
+            <div className="flex flex-col text-sm items-center gap-1">
+              <p>{"Fri"}</p>
+              <FontAwesomeIcon icon={faCloudShowersHeavy} />
+              <p>{fayWeather[0].temp.day + " ℉"}</p>
+            </div>
+            <div className="flex flex-col text-sm items-center gap-1">
+              <p>{"Sat"}</p>
+              <FontAwesomeIcon icon={faCloudSunRain} />
+              <p>{fayWeather[0].temp.day + " ℉"}</p>
             </div>
           </div>
         ) : null}
 
         {weatherArea === "Simsboro" ? (
           <div className="flex flex-row gap-6 items-center">
-            <FontAwesomeIcon icon={faTemperatureHalf} size={"2x"} />
-            <div className="flex flex-row gap-1">
-              <p>{"High: " + simWeather[0].temp.max + "°F"}</p>
-              <p>{"Low: " + simWeather[0].temp.min + "°F"}</p>
-              <p>{"Feels Like: " + simWeather[0].feels_like.day + "°F"}</p>
-            </div>
-            <FontAwesomeIcon icon={faGripLinesVertical} size={"2xl"} />
-            <div className="flex flex-row">{simWeather[0].summary}</div>
-            <FontAwesomeIcon icon={faGripLinesVertical} size={"2xl"} />
-            <FontAwesomeIcon icon={faDroplet} size={"2x"} />
-            <div className="flex flex-row gap-1">
-              <p>{"Chance of rain: " + simWeather[0].pop * 100 + "%"}</p>
-            </div>
+            <p>{simWeather[0].temp.day + " ℉"}</p>
+            <p>{simWeather[0].rain * 100 + "% chance of rainfall"}</p>
           </div>
         ) : null}
 
         {weatherArea === "Magnolia" ? (
           <div className="flex flex-row gap-6 items-center">
-            <FontAwesomeIcon icon={faTemperatureHalf} size={"2x"} />
-            <div className="flex flex-row gap-1">
-              <p>{"High: " + magWeather[0].temp.max + "°F"}</p>
-              <p>{"Low: " + magWeather[0].temp.min + "°F"}</p>
-              <p>{"Feels Like: " + magWeather[0].feels_like.day + "°F"}</p>
-            </div>
-            <FontAwesomeIcon icon={faGripLinesVertical} size={"2xl"} />
-            <div className="flex flex-row">{magWeather[0].summary}</div>
-            <FontAwesomeIcon icon={faGripLinesVertical} size={"2xl"} />
-            <FontAwesomeIcon icon={faDroplet} size={"2x"} />
-            <div className="flex flex-row gap-1">
-              <p>{"Chance of rain: " + magWeather[0].pop * 100 + "%"}</p>
-            </div>
+            <p>{magWeather[0].temp.day + " ℉"}</p>
+            <p>{magWeather[0].rain * 100 + "% chance of rainfall"}</p>
           </div>
         ) : null}
       </WeatherBanner>
@@ -195,30 +178,20 @@ function Header() {
 
 function Map() {
   return (
-    <div className="flex flex-col gap-2">
-      <div>
-        <GLMap />
-      </div>
-    </div>
-  );
-}
-
-function FieldAnalysis() {
-  return (
     <div>
-      <AnalysisBox />
+      <GLMap />
     </div>
   );
 }
 
 function Body() {
   return (
-    <div className={"flex flex-row gap-2 font-Arvo font-bold min-h-2xl"}>
-      <div className={"bg-indigo-950 items-center rounded-xl p-5 basis-4/5"}>
+    <div className={"flex flex-row gap-2 font-Arvo font-bold"}>
+      <div className="border-4 border-solid rounded-3xl border-Corp3">
         <Map />
       </div>
-      <div className={"bg-indigo-950 items-center rounded-xl p-5 basis-1/5"}>
-        <FieldAnalysis />
+      <div className={"items-center rounded-xl p-5 bg-Corp3"}>
+        <AnalysisBox />
       </div>
     </div>
   );
