@@ -77,6 +77,7 @@ async function getWeather(location: string) {
             max: day.temp.max,
           },
           description: day.weather[0].description,
+          main: day.weather[0].main,
           //Converting rain to inches each day
           rain: day.rain / 25.4 || 0,
           pop: day.pop,

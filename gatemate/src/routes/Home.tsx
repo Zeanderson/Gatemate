@@ -13,7 +13,6 @@ import {
   faSnowflake,
   faCloudBolt,
   faCloudShowersHeavy,
-  faCloudSunRain,
 } from "@fortawesome/free-solid-svg-icons";
 import AnalysisBox from "../components/Analysis";
 import {
@@ -33,11 +32,15 @@ type dailyWeather = {
     max: number;
   };
   description: string;
+  main: string;
   rain: number;
   pop: number;
 };
 
-type weatherData = [dailyWeather];
+type weatherData = dailyWeather[];
+type weatherIconType = {
+  weather: string;
+};
 
 function fetchWeather(weatherArea: string, queryKey: string) {
   return useQuery({
@@ -59,9 +62,33 @@ function checkSession() {
   });
 }
 
-function Header() {
-  const [weatherArea, setWeatherArea] = useState("Fayetteville");
+function WeatherIcon({ weather }: weatherIconType) {
+  if (weather === "Thunderstorm") {
+    return <FontAwesomeIcon icon={faCloudBolt} />;
+  }
+  if (weather === "Drizzle") {
+    return <FontAwesomeIcon icon={faCloudRain} />;
+  }
+  if (weather === "Rain") {
+    return <FontAwesomeIcon icon={faCloudShowersHeavy} />;
+  }
+  if (weather === "Snow") {
+    return <FontAwesomeIcon icon={faSnowflake} />;
+  }
+  if (weather === "Clear") {
+    return <FontAwesomeIcon icon={faSun} />;
+  }
+  if (weather === "Clouds") {
+    return <FontAwesomeIcon icon={faCloudSun} />;
+  }
+  return <FontAwesomeIcon icon={faCloudSun} />;
+}
 
+function Header() {
+  const dayClassName =
+    "flex flex-row text-sm items-center gap-2 border border-solid rounded-md p-2 bg-Corp2 ";
+  const colClassName = "flex flex-col items-center gap-1";
+  const [weatherArea, setWeatherArea] = useState("Fayetteville");
   const fayettevilleWeather = fetchWeather("Fayetteville", "fay");
   const simsboroWeather = fetchWeather("Simsboro", "sim");
   const magnoliaWeather = fetchWeather("Magnolia", "mag");
@@ -81,6 +108,27 @@ function Header() {
   const fayWeather: weatherData = fayettevilleWeather.data;
   const simWeather: weatherData = simsboroWeather.data;
   const magWeather: weatherData = magnoliaWeather.data;
+
+  const date1 = new Date(fayWeather[0].date * 1000);
+  const day1 = date1.toLocaleDateString("en-US", { weekday: "short" });
+
+  const date2 = new Date(fayWeather[1].date * 1000);
+  const day2 = date2.toLocaleDateString("en-US", { weekday: "short" });
+
+  const date3 = new Date(fayWeather[2].date * 1000);
+  const day3 = date3.toLocaleDateString("en-US", { weekday: "short" });
+
+  const date4 = new Date(fayWeather[3].date * 1000);
+  const day4 = date4.toLocaleDateString("en-US", { weekday: "short" });
+
+  const date5 = new Date(fayWeather[4].date * 1000);
+  const day5 = date5.toLocaleDateString("en-US", { weekday: "short" });
+
+  const date6 = new Date(fayWeather[5].date * 1000);
+  const day6 = date6.toLocaleDateString("en-US", { weekday: "short" });
+
+  const date7 = new Date(fayWeather[6].date * 1000);
+  const day7 = date7.toLocaleDateString("en-US", { weekday: "short" });
 
   return (
     <div className={"flex flex-row gap-2 font-Arvo font-bold"}>
@@ -116,43 +164,89 @@ function Header() {
           </Combobox>
         </div>
         {weatherArea === "Fayetteville" ? (
-          <div className="flex flex-row gap-14 items-center">
-            {/* <p>{fayWeather[0].temp.day + " ℉"}</p>
-            <p>{fayWeather[0].rain * 100 + "% chance of rainfall"}</p> */}
-            <div className="flex flex-col text-sm items-center gap-1">
-              <p>{"Sat"}</p>
-              <FontAwesomeIcon icon={faSun} />
-              <p>{fayWeather[0].temp.day + " ℉"}</p>
+          <div className="flex flex-row gap-10 items-center">
+            <div className={dayClassName}>
+              <div className={colClassName}>
+                <p>{day1}</p>
+                <WeatherIcon weather={fayWeather[0].main} />
+                <p>{fayWeather[0].temp.day + " ℉"}</p>
+              </div>
+              <div className={colClassName}>
+                <p>{fayWeather[0].pop * 100 + "% of rain"}</p>
+                <p>{fayWeather[0].rain.toFixed(2) + " inches"}</p>
+              </div>
             </div>
-            <div className="flex flex-col text-sm items-center gap-1">
-              <p>{"Mon"}</p>
-              <FontAwesomeIcon icon={faCloudSun} />
-              <p>{fayWeather[0].temp.day + " ℉"}</p>
+
+            <div className={dayClassName}>
+              <div className={colClassName}>
+                <p>{day2}</p>
+                <WeatherIcon weather={fayWeather[1].main} />
+                <p>{fayWeather[1].temp.day + " ℉"}</p>
+              </div>
+              <div className={colClassName}>
+                <p>{fayWeather[1].pop * 100 + "% of rain"}</p>
+                <p>{fayWeather[1].rain.toFixed(2) + " inches"}</p>
+              </div>
             </div>
-            <div className="flex flex-col text-sm items-center gap-1 border border-solid border-Corp1 p-1 rounded-xl">
-              <p>{"Tues"}</p>
-              <FontAwesomeIcon icon={faCloudRain} />
-              <p>{fayWeather[0].temp.day + " ℉"}</p>
+
+            <div className={dayClassName}>
+              <div className={colClassName}>
+                <p>{day3}</p>
+                <WeatherIcon weather={fayWeather[2].main} />
+                <p>{fayWeather[2].temp.day + " ℉"}</p>
+              </div>
+              <div className={colClassName}>
+                <p>{fayWeather[2].pop * 100 + "% of rain"}</p>
+                <p>{fayWeather[2].rain.toFixed(2) + " inches"}</p>
+              </div>
             </div>
-            <div className="flex flex-col text-sm items-center gap-1">
-              <p>{"Wed"}</p>
-              <FontAwesomeIcon icon={faCloudBolt} />
-              <p>{fayWeather[0].temp.day + " ℉"}</p>
+
+            <div className={dayClassName}>
+              <div className={colClassName}>
+                <p>{day4}</p>
+                <WeatherIcon weather={fayWeather[3].main} />
+                <p>{fayWeather[3].temp.day + " ℉"}</p>
+              </div>
+              <div className={colClassName}>
+                <p>{fayWeather[3].pop * 100 + "% of rain"}</p>
+                <p>{fayWeather[3].rain.toFixed(2) + " inches"}</p>
+              </div>
             </div>
-            <div className="flex flex-col text-sm items-center gap-1">
-              <p>{"Thurs"}</p>
-              <FontAwesomeIcon icon={faSnowflake} />
-              <p>{fayWeather[0].temp.day + " ℉"}</p>
+
+            <div className={dayClassName}>
+              <div className={colClassName}>
+                <p>{day5}</p>
+                <WeatherIcon weather={fayWeather[4].main} />
+                <p>{fayWeather[4].temp.day + " ℉"}</p>
+              </div>
+              <div className={colClassName}>
+                <p>{fayWeather[4].pop * 100 + "% of rain"}</p>
+                <p>{fayWeather[4].rain.toFixed(2) + " inches"}</p>
+              </div>
             </div>
-            <div className="flex flex-col text-sm items-center gap-1">
-              <p>{"Fri"}</p>
-              <FontAwesomeIcon icon={faCloudShowersHeavy} />
-              <p>{fayWeather[0].temp.day + " ℉"}</p>
+
+            <div className={dayClassName}>
+              <div className={colClassName}>
+                <p>{day6}</p>
+                <WeatherIcon weather={fayWeather[5].main} />
+                <p>{fayWeather[5].temp.day + " ℉"}</p>
+              </div>
+              <div className={colClassName}>
+                <p>{fayWeather[5].pop * 100 + "% of rain"}</p>
+                <p>{fayWeather[5].rain.toFixed(2) + " inches"}</p>
+              </div>
             </div>
-            <div className="flex flex-col text-sm items-center gap-1">
-              <p>{"Sat"}</p>
-              <FontAwesomeIcon icon={faCloudSunRain} />
-              <p>{fayWeather[0].temp.day + " ℉"}</p>
+
+            <div className={dayClassName}>
+              <div className={colClassName}>
+                <p>{day7}</p>
+                <WeatherIcon weather={fayWeather[6].main} />
+                <p>{fayWeather[6].temp.day + " ℉"}</p>
+              </div>
+              <div className={colClassName}>
+                <p>{fayWeather[6].pop * 100 + "% of rain"}</p>
+                <p>{fayWeather[6].rain.toFixed(2) + " inches"}</p>
+              </div>
             </div>
           </div>
         ) : null}
