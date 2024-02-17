@@ -18,8 +18,9 @@ function GLMap() {
           zoom: 14,
         }}
         style={{
-          width: 1500,
-          height: 800,
+          width: "100%",
+          height: "85vh",
+          aspectRatio: 1 / 1,
           borderRadius: "20px",
           overflow: "",
         }}

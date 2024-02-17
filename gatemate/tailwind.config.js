@@ -18,6 +18,11 @@ export default {
         Corp4: '#4F4A41',
         Corp5: '#6E6658'
       },
+      screens: {
+        "sm": "640px",
+        "3xl": "1920px",
+        "4xl": "2560px",
+      }
     },
   },
   plugins: [],

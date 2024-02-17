@@ -86,7 +86,7 @@ function WeatherIcon({ weather }: weatherIconType) {
 
 function Header() {
   const dayClassName =
-    "flex flex-row text-sm items-center gap-2 border border-solid rounded-md p-2 bg-Corp2 ";
+    "flex flex-row text-sm items-center gap-3 rounded-md p-2 bg-Corp2 ";
   const colClassName = "flex flex-col items-center gap-1";
   const [weatherArea, setWeatherArea] = useState("Fayetteville");
   const fayettevilleWeather = fetchWeather("Fayetteville", "fay");
@@ -133,8 +133,8 @@ function Header() {
   return (
     <div className={"flex flex-row gap-2 font-Arvo font-bold"}>
       <WeatherBanner className={"flex flex-row gap-8 basis-11/12 "}>
-        <div className={"flex flex-col items-center gap-1 text-xs"}>
-          <Combobox className="max-w-xs" openOnFocus={true}>
+        <div className={"flex flex-col items-center gap-1 text-xs "}>
+          <Combobox className="lg:max-w-xs" openOnFocus={true}>
             <ComboboxInput
               className="bg-Corp2 rounded-md p-2"
               placeholder={"Fayetteville"}
@@ -172,7 +172,7 @@ function Header() {
                 <p>{fayWeather[0].temp.day + " ℉"}</p>
               </div>
               <div className={colClassName}>
-                <p>{fayWeather[0].pop * 100 + "% of rain"}</p>
+                <p>{(fayWeather[0].pop * 100).toFixed(1) + "% of rain"}</p>
                 <p>{fayWeather[0].rain.toFixed(2) + " inches"}</p>
               </div>
             </div>
@@ -184,7 +184,7 @@ function Header() {
                 <p>{fayWeather[1].temp.day + " ℉"}</p>
               </div>
               <div className={colClassName}>
-                <p>{fayWeather[1].pop * 100 + "% of rain"}</p>
+                <p>{(fayWeather[1].pop * 100).toFixed(1) + "% of rain"}</p>
                 <p>{fayWeather[1].rain.toFixed(2) + " inches"}</p>
               </div>
             </div>
@@ -196,7 +196,7 @@ function Header() {
                 <p>{fayWeather[2].temp.day + " ℉"}</p>
               </div>
               <div className={colClassName}>
-                <p>{fayWeather[2].pop * 100 + "% of rain"}</p>
+                <p>{(fayWeather[2].pop * 100).toFixed(1) + "% of rain"}</p>
                 <p>{fayWeather[2].rain.toFixed(2) + " inches"}</p>
               </div>
             </div>
@@ -208,7 +208,7 @@ function Header() {
                 <p>{fayWeather[3].temp.day + " ℉"}</p>
               </div>
               <div className={colClassName}>
-                <p>{fayWeather[3].pop * 100 + "% of rain"}</p>
+                <p>{(fayWeather[3].pop * 100).toFixed(1) + "% of rain"}</p>
                 <p>{fayWeather[3].rain.toFixed(2) + " inches"}</p>
               </div>
             </div>
@@ -220,7 +220,7 @@ function Header() {
                 <p>{fayWeather[4].temp.day + " ℉"}</p>
               </div>
               <div className={colClassName}>
-                <p>{fayWeather[4].pop * 100 + "% of rain"}</p>
+                <p>{(fayWeather[4].pop * 100).toFixed(1) + "% of rain"}</p>
                 <p>{fayWeather[4].rain.toFixed(2) + " inches"}</p>
               </div>
             </div>
@@ -232,7 +232,7 @@ function Header() {
                 <p>{fayWeather[5].temp.day + " ℉"}</p>
               </div>
               <div className={colClassName}>
-                <p>{fayWeather[5].pop * 100 + "% of rain"}</p>
+                <p>{(fayWeather[5].pop * 100).toFixed(1) + "% of rain"}</p>
                 <p>{fayWeather[5].rain.toFixed(2) + " inches"}</p>
               </div>
             </div>
@@ -244,7 +244,7 @@ function Header() {
                 <p>{fayWeather[6].temp.day + " ℉"}</p>
               </div>
               <div className={colClassName}>
-                <p>{fayWeather[6].pop * 100 + "% of rain"}</p>
+                <p>{(fayWeather[6].pop * 100).toFixed(1) + "% of rain"}</p>
                 <p>{fayWeather[6].rain.toFixed(2) + " inches"}</p>
               </div>
             </div>
@@ -270,21 +270,13 @@ function Header() {
   );
 }
 
-function Map() {
-  return (
-    <div>
-      <GLMap />
-    </div>
-  );
-}
-
 function Body() {
   return (
     <div className={"flex flex-row gap-2 font-Arvo font-bold"}>
-      <div className="border-4 border-solid rounded-3xl border-Corp3">
-        <Map />
+      <div className="border-4 border-solid rounded-3xl border-Corp3 basis-11/12">
+        <GLMap />
       </div>
-      <div className={"items-center rounded-xl p-5 bg-Corp3"}>
+      <div className={"items-center rounded-xl bg-Corp3 basis-1/12"}>
         <AnalysisBox />
       </div>
     </div>
