@@ -13,6 +13,9 @@ import {
   faSnowflake,
   faCloudBolt,
   faCloudShowersHeavy,
+  faSquareCheck,
+  faTriangleExclamation,
+  faCircleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import AnalysisBox from "../components/Analysis";
 import {
@@ -143,19 +146,19 @@ function Header() {
             <ComboboxPopover className="bg-Corp2 p-2">
               <ComboboxList defaultValue={"Hello"}>
                 <ComboboxOption
-                  className="hover:bg-slate-500 rounded-md"
+                  className="hover:bg-slate-500 rounded-md transition-colors "
                   value="Fayetteville"
                   onClick={() => {
                     setWeatherArea("Fayetteville");
                   }}
                 />
                 <ComboboxOption
-                  className="hover:bg-slate-500 rounded-md"
+                  className="hover:bg-slate-500 rounded-md transition-colors "
                   value="Simsboro"
                   onClick={() => setWeatherArea("Simsboro")}
                 />
                 <ComboboxOption
-                  className="hover:bg-slate-500 rounded-md"
+                  className="hover:bg-slate-500 rounded-md transition-colors "
                   value="Magnolia"
                   onClick={() => setWeatherArea("Magnolia")}
                 />
@@ -276,8 +279,38 @@ function Body() {
       <div className="border-4 border-solid rounded-3xl border-Corp3 basis-11/12">
         <GLMap />
       </div>
-      <div className={"items-center rounded-xl bg-Corp3 basis-1/12"}>
+      <div
+        className={
+          "flex flex-col rounded-xl justify-between bg-Corp3 basis-1/12"
+        }
+      >
         <AnalysisBox />
+        <div className="flex flex-row text-sm p-4 justify-between">
+          <div className="flex flex-row gap-1 items-center">
+            <FontAwesomeIcon
+              className="text-green-500"
+              icon={faSquareCheck}
+              size="2x"
+            />
+            <h1>All up</h1>
+          </div>
+          <div className="flex flex-row gap-1 items-center">
+            <FontAwesomeIcon
+              className="text-yellow-500"
+              icon={faTriangleExclamation}
+              size="2x"
+            />
+            <h1>Minor</h1>
+          </div>
+          <div className="flex flex-row gap-1 items-center">
+            <FontAwesomeIcon
+              className="text-red-500"
+              icon={faCircleExclamation}
+              size="2x"
+            />
+            <h1>Major</h1>
+          </div>
+        </div>
       </div>
     </div>
   );
