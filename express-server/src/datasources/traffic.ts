@@ -30,8 +30,6 @@ type TrafficReturn = {
 }
 
 async function generateTraffic(userId: string, fieldId: string) {
-  // TODO: Ultimately some of these values will need to be passed in, things like waterLevel can be updated within the generator, or the generator can provide a value to update the waterLevel with
-  // TODO the status(green, yellow, red) will likely be handled by something else that is not the traffic generator but for now it is included here
   let idealWaterLevel = 5; // this variable would be water the farmer sets it to be and will be passed in
   let threshold = 2; // this variable would be the maximum allowed change in water level and is set by the farmer and will be passed in
 
@@ -77,7 +75,10 @@ async function generateTraffic(userId: string, fieldId: string) {
     lowBattery = true ? randomStatus == 2 : false;
     // TODO: Add more errors here
 
+
+    
     // Determine status of gate
+    //TODO: Move to backend
     if (connectionError) {
       status = "Red"
     }
@@ -95,10 +96,11 @@ async function generateTraffic(userId: string, fieldId: string) {
       gateId: gateId,
       idealWaterLevel: idealWaterLevel,
       threshold: threshold,
-      actualWaterLevel: actualWaterLevel,
-      connectionError: connectionError,
-      lowBattery: lowBattery,
-      status: status
+
+      actualWaterLevel: actualWaterLevel, // TODO: Add to DB
+      connectionError: connectionError, // TODO: Add to DB
+      lowBattery: lowBattery, // TODO: Add to DB
+      status: status // TODO: Add to DB
     };
     gates.push(gateData);
   }
