@@ -1,53 +1,54 @@
-import { Layer, Map, Marker } from "react-map-gl";
+import { Layer, Map, Marker, Source } from "react-map-gl";
 import { useState } from "react";
 import { Feature } from "geojson";
-import { Source } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faWheatAwn } from "@fortawesome/free-solid-svg-icons";
+import { faCheckSquare, faPlus } from "@fortawesome/free-solid-svg-icons";
 
-function GLMap() {
-  const [cord1, setcord1] = useState([0, 0]);
-  const [addCord1, setAddCord1] = useState(false);
-  const [cord2, setcord2] = useState([0, 0]);
-  const [addCord2, setAddCord2] = useState(false);
-  const [cord3, setcord3] = useState([0, 0]);
-  const [addCord3, setAddCord3] = useState(false);
-  const [cord4, setcord4] = useState([0, 0]);
-  const [addCord4, setAddCord4] = useState(false);
-
-  const geojson: Feature = {
+function Field(cords: number[][]) {
+  const geoJsonField: Feature = {
     type: "Feature",
-    properties: {}, // Empty properties object
+    properties: {},
     geometry: {
       type: "Polygon",
-      coordinates: [
-        [
-          [-94.17025058399322, 32.06181540184127],
-          [-94.17023760738029, 32.061837396572145],
-          [-94.16909566543113, 32.06323405113177],
-          [-94.16450194440866, 32.06096310195936],
-        ],
-      ],
+      coordinates: [cords],
     },
   };
+  return geoJsonField;
+}
 
+function GLMap() {
+  //
+  const testField1 = Field([
+    [-94.178, 32.069],
+    [-94.174, 32.064],
+    [-94.165, 32.064],
+    [-94.164, 32.068],
+    [-94.171, 32.072],
+  ]);
+  const testField2 = Field([
+    [-94.153, 32.081],
+    [-94.155, 32.079],
+    [-94.159, 32.077],
+    [-94.155, 32.072],
+    [-94.149, 32.074],
+    [-94.15, 32.079],
+  ]);
+  //
+
+  const [addField, setAddField] = useState(false);
+  const [fieldCords, setFieldCords] = useState<number[][]>([]);
+  const [addedFields, setAddedFields] = useState<Feature[]>([
+    testField1,
+    testField2,
+  ]);
   return (
     <div className="relative">
       <Map
         onClick={(e) => {
-          addCord1
-            ? (setcord1([e.lngLat.lng, e.lngLat.lat]), setAddCord1(false))
-            : null;
-          addCord2
-            ? (setcord2([e.lngLat.lng, e.lngLat.lat]), setAddCord2(false))
-            : null;
-          addCord3
-            ? (setcord3([e.lngLat.lng, e.lngLat.lat]), setAddCord3(false))
-            : null;
-          addCord4
-            ? (setcord4([e.lngLat.lng, e.lngLat.lat]), setAddCord4(false))
-            : null;
+          addField
+            ? setFieldCords([...fieldCords, [e.lngLat.lng, e.lngLat.lat]])
+            : setFieldCords([]);
         }}
         mapboxAccessToken={import.meta.env.VITE_MAP_BOX_KEY}
         mapLib={import("mapbox-gl")}
@@ -65,94 +66,80 @@ function GLMap() {
         }}
         mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
       >
-        {/*//! This is how you add the polygon! */}
-        {/* <Source type="geojson" data={geojson}>
-          <Layer
-            id="polygon"
-            type="fill"
-            paint={{
-              "fill-color": "#088",
-              "fill-opacity": 0.8,
-            }}
-          ></Layer>
-        </Source> */}
+        {addedFields.map((field, index) => {
+          // Accessing the coordinates of the polygon
+          const coordinates = (field.geometry as any).coordinates[0];
 
-        <Marker
-          style={{ position: "absolute" }}
-          longitude={-94.160583}
-          latitude={32.061932}
-        >
-          <div className="flex flex-col gap-1">
-            <h1 className="text-xl text-black font-Arvo">Field 1</h1>
-            <button
-              className="text-green-500"
-              onClick={() => (window.location.href = "/field")}
-            >
-              <FontAwesomeIcon icon={faWheatAwn} size="4x" />
-            </button>
-          </div>
-        </Marker>
+          // Calculating the centroid of the polygon
+          let centroidX = 0;
+          let centroidY = 0;
+          for (let i = 0; i < coordinates.length; i++) {
+            centroidX += coordinates[i][0];
+            centroidY += coordinates[i][1];
+          }
+          centroidX /= coordinates.length;
+          centroidY /= coordinates.length;
+
+          return (
+            <Source type="geojson" data={field} key={index}>
+              <Layer
+                id={`polygon${index}`}
+                type="fill"
+                paint={{
+                  "fill-color": "#088",
+                  "fill-opacity": 0.8,
+                }}
+              />
+              <Marker
+                style={{ position: "absolute" }}
+                longitude={centroidX}
+                latitude={centroidY}
+              >
+                <h1 className="text-xl text-black font-Arvo">{`Field ${
+                  index + 1
+                }`}</h1>
+                <button
+                  className="text-green-500"
+                  onClick={() => {
+                    window.location.href = `/field`;
+                  }}
+                >
+                  <FontAwesomeIcon icon={faCheckSquare} size="4x" />
+                </button>
+              </Marker>
+            </Source>
+          );
+        })}
       </Map>
       <div className="absolute top-4 right-4 border rounded-xl p-2 bg-Corp3 border-Corp2 text-Corp1 flex flex-col gap-2">
-        <div className="flex flex-row gap-1 items-center">
-          <p>Cord 1</p>
-          <button
-            className="hover:bg-Corp2 transition-colors rounded-xl p-0.5"
-            onClick={() => {
-              setAddCord1(!addCord1);
-            }}
-          >
-            <FontAwesomeIcon icon={faPlus} />
-          </button>
-          <p>{cord1[0].toFixed(5)}</p>
-          <p>{cord1[1].toFixed(5)}</p>
-        </div>
-
-        <div className="flex flex-row gap-1 items-center">
-          <p>Cord 2</p>
-          <button
-            className="hover:bg-Corp2 transition-colors rounded-xl p-0.5"
-            onClick={() => {
-              setAddCord2(!addCord2);
-            }}
-          >
-            <FontAwesomeIcon icon={faPlus} />
-          </button>
-          <p>{cord2[0].toFixed(5)}</p>
-          <p>{cord2[1].toFixed(5)}</p>
-        </div>
-
-        <div className="flex flex-row gap-1 items-center">
-          <p>Cord 3</p>
-          <button
-            className="hover:bg-Corp2 transition-colors rounded-xl p-0.5"
-            onClick={() => {
-              setAddCord3(!addCord3);
-            }}
-          >
-            <FontAwesomeIcon icon={faPlus} />
-          </button>
-          <p>{cord3[0].toFixed(5)}</p>
-          <p>{cord3[1].toFixed(5)}</p>
-        </div>
-
-        <div className="flex flex-row gap-1 items-center">
-          <p>Cord 4</p>
-          <button
-            className="hover:bg-Corp2 transition-colors rounded-xl p-0.5"
-            onClick={() => {
-              setAddCord4(!addCord4);
-            }}
-          >
-            <FontAwesomeIcon icon={faPlus} />
-          </button>
-          <p>{cord4[0].toFixed(5)}</p>
-          <p>{cord4[1].toFixed(5)}</p>
-        </div>
-
-        <button className="hover:bg-Corp2 transition-colors rounded-xl flex flex-row gap-2 items-center p-1 justify-center">
-          <p>Add Field</p>
-          <FontAwesomeIcon icon={faPlus} size="lg" />
+        <button
+          className="hover:bg-Corp2 transition-colors rounded-xl p-4"
+          onClick={() => {
+            {
+              addField
+                ? setAddedFields([...addedFields, Field(fieldCords)])
+                : setFieldCords([]);
+            }
+            setAddField(!addField);
+          }}
+        >
+          {addField ? (
+            <div className="flex flex-col gap-2">
+              <p>Submit Field</p>
+              {fieldCords.map((cord, index) => (
+                <div key={index} className="flex flex-row gap-1 text-xs">
+                  <p>Cord {index + 1}</p>
+                  <p>{cord[0].toFixed(3)}</p>
+                  <p>{cord[1].toFixed(3)}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-row gap-2">
+              <p>Add Field</p>
+              <FontAwesomeIcon icon={faPlus} size="lg" />
+            </div>
+          )}
         </button>
       </div>
     </div>
@@ -160,37 +147,3 @@ function GLMap() {
 }
 
 export default GLMap;
-
-{
-  /* <Marker
-          style={{ position: "absolute" }}
-          longitude={-94.170583}
-          latitude={32.063932}
-        >
-          <div className="flex flex-col gap-1">
-            <h1 className="text-xl text-black font-Arvo">Field 2</h1>
-            <button
-              className="text-yellow-500"
-              onClick={() => (window.location.href = "/field")}
-            >
-              <FontAwesomeIcon icon={faWheatAwn} size="4x" />
-            </button>
-          </div>
-        </Marker>
-
-        <Marker
-          style={{ position: "absolute" }}
-          longitude={-94.150583}
-          latitude={32.062932}
-        >
-          <div className="flex flex-col gap-1">
-            <h1 className="text-xl text-black font-Arvo">Field 3</h1>
-            <button
-              className="text-red-500"
-              onClick={() => (window.location.href = "/field")}
-            >
-              <FontAwesomeIcon icon={faWheatAwn} size="4x" />
-            </button>
-          </div>
-        </Marker> */
-}
