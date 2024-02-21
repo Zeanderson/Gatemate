@@ -1,10 +1,24 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from "mongoose";
 import {
-    IDailyWeather, IWeatherData, IUser, IGate, ITrafficReturn, 
-    IDailyWeatherDoc, IWeatherDataDoc, IUserDoc, IGateDoc, ITrafficReturnDoc, 
-    IDailyWeatherModel, IWeatherDataModel, IUserModel, IGateModel, ITrafficReturnModel 
-}
-from './interfaces'; 
+  IDailyWeather,
+  IWeatherData,
+  IUser,
+  IGate,
+  ITrafficReturn,
+  IField,
+  IDailyWeatherDoc,
+  IWeatherDataDoc,
+  IUserDoc,
+  IGateDoc,
+  ITrafficReturnDoc,
+  IFieldDoc,
+  IDailyWeatherModel,
+  IWeatherDataModel,
+  IUserModel,
+  IGateModel,
+  ITrafficReturnModel,
+  IFieldModel,
+} from "./interfaces";
 
 /*
 * IF YOU WANT TO ADD A TYPE: 
@@ -30,148 +44,175 @@ from './interfaces';
 * See ./datasources/db.ts for information on how to use these types in code 
 */
 
-// * Schema Definitions 
+// * Schema Definitions
 
 const DailyWeatherSchema: Schema<IDailyWeatherDoc> = new Schema(
-    {
-        dt: Date, 
-        sunrise: Number, 
-        sunset: Number, 
-        temp: {
-        day: Number, 
-        min: Number, 
-        max: Number, 
-        night: Number, 
-        eve: Number, 
-        morn: Number
-        }, 
-        feels_like: {
-        day: Number, 
-        night: Number, 
-        eve: Number, 
-        morn: Number, 
-        }, 
-        pressure: Number, 
-        humidity: Number, 
-        dew_point: Number, 
-        wind_speed: Number, 
-        wind_deg: Number, 
-        weather: [
-        {
-            id: Number,
-            main: String,
-            description: String,
-            icon: String,
-        }
-        ],
-        clouds: Number,
-        pop: Number,
-        rain: Number,
-        uvi: Number,
-    }, 
-    {
-        strict: "throw", 
-        strictQuery: false 
-    }
+  {
+    dt: Date,
+    sunrise: Number,
+    sunset: Number,
+    temp: {
+      day: Number,
+      min: Number,
+      max: Number,
+      night: Number,
+      eve: Number,
+      morn: Number,
+    },
+    feels_like: {
+      day: Number,
+      night: Number,
+      eve: Number,
+      morn: Number,
+    },
+    pressure: Number,
+    humidity: Number,
+    dew_point: Number,
+    wind_speed: Number,
+    wind_deg: Number,
+    weather: [
+      {
+        id: Number,
+        main: String,
+        description: String,
+        icon: String,
+      },
+    ],
+    clouds: Number,
+    pop: Number,
+    rain: Number,
+    uvi: Number,
+  },
+  {
+    strict: "throw",
+    strictQuery: false,
+  }
 );
 
 const WeatherDataSchema = new Schema<IWeatherDataDoc>(
-    {
-        presentDay: {
-        weather: DailyWeatherSchema,
-        },
-        day1: {
-        weather: DailyWeatherSchema,
-        },
-        day2: {
-        weather: DailyWeatherSchema,
-        },
-        day3: {
-        weather: DailyWeatherSchema,
-        },
-        day4: {
-        weather: DailyWeatherSchema,
-        },
-        day5: {
-        weather: DailyWeatherSchema,
-        },
-        day6: {
-        weather: DailyWeatherSchema,
-        },
-        day7: {
-        weather: DailyWeatherSchema,
-        },
-    }, 
-    {
-        strict: "throw", 
-        strictQuery: false 
-    }
-);
-
-const UserSchema = new Schema<IUserDoc>(
-    {
-        email: String, 
-        password: String, 
-    }, 
-    {
-        strict: "throw", 
-        strictQuery: false 
-    }
+  {
+    presentDay: {
+      weather: DailyWeatherSchema,
+    },
+    day1: {
+      weather: DailyWeatherSchema,
+    },
+    day2: {
+      weather: DailyWeatherSchema,
+    },
+    day3: {
+      weather: DailyWeatherSchema,
+    },
+    day4: {
+      weather: DailyWeatherSchema,
+    },
+    day5: {
+      weather: DailyWeatherSchema,
+    },
+    day6: {
+      weather: DailyWeatherSchema,
+    },
+    day7: {
+      weather: DailyWeatherSchema,
+    },
+  },
+  {
+    strict: "throw",
+    strictQuery: false,
+  }
 );
 
 const GateSchema = new Schema<IGateDoc>(
-    {
-        idealWaterLevel: Number,
-        threshold: Number,
-        actualWaterLevel: Number,
-        connectionError: Schema.Types.Boolean,
-        lowBattery: Schema.Types.Boolean,
-        status: String
-    }, 
-    {
-        strict: "throw", 
-        strictQuery: false 
-    }
-); 
-
-const TrafficReturnSchema = new Schema<ITrafficReturnDoc>(
-    {
-        userId: Number,
-        fieldId: Number,
-        gates: [GateSchema],
-    }, 
-    {
-        strict: "throw", 
-        strictQuery: false 
-    }
+  {
+    idealWaterLevel: Number,
+    threshold: Number,
+    actualWaterLevel: Number,
+    connectionError: Schema.Types.Boolean,
+    lowBattery: Schema.Types.Boolean,
+    status: String,
+  },
+  {
+    strict: "throw",
+    strictQuery: false,
+  }
 );
 
-// * Static Method Definitions 
+const FieldSchema = new Schema<IFieldDoc>(
+  {
+    fieldId: Number,
+    userId: Number,
+    location: [
+      {
+        lat: Number,
+        lon: Number,
+      },
+    ],
+    Gates: [GateSchema],
+  },
+  {
+    strict: "throw",
+    strictQuery: false,
+  }
+);
+
+const UserSchema = new Schema<IUserDoc>(
+  {
+    email: String,
+    password: String,
+  },
+  {
+    strict: "throw",
+    strictQuery: false,
+  }
+);
+
+const TrafficReturnSchema = new Schema<ITrafficReturnDoc>(
+  {
+    userId: Number,
+    fieldId: Number,
+    gates: [GateSchema],
+  },
+  {
+    strict: "throw",
+    strictQuery: false,
+  }
+);
+
+// * Static Method Definitions
 
 DailyWeatherSchema.statics.buildDailyWeather = (args: IDailyWeather) => {
-    return new DailyWeather(args); 
-}
+  return new DailyWeather(args);
+};
 
 WeatherDataSchema.statics.buildWeatherData = (args: IWeatherData) => {
-    return new WeatherData(args); 
-}
+  return new WeatherData(args);
+};
 
 UserSchema.statics.buildUser = (args: IUser) => {
-    return new User(args); 
-}
+  return new User(args);
+};
 
 GateSchema.statics.buildGate = (args: IGate) => {
-    return new Gate(args); 
-}
+  return new Gate(args);
+};
 
 TrafficReturnSchema.statics.buildTrafficReturn = (args: ITrafficReturn) => {
-    return new TrafficReturn(args); 
-}
+  return new TrafficReturn(args);
+};
 
-//* Model Instantiations 
+//* Model Instantiations
 
-export const DailyWeather = model<IDailyWeatherDoc, IDailyWeatherModel>("daily_weather", DailyWeatherSchema);
-export const WeatherData = model<IWeatherDataDoc, IWeatherDataModel>("weather_data", WeatherDataSchema); 
-export const User = model<IUserDoc, IUserModel>("users", UserSchema); 
-export const Gate = model<IGateDoc, IGateModel>("gates", GateSchema); 
-export const TrafficReturn = model<ITrafficReturnDoc, ITrafficReturnModel>("traffic_returns", TrafficReturnSchema); 
+export const DailyWeather = model<IDailyWeatherDoc, IDailyWeatherModel>(
+  "daily_weather",
+  DailyWeatherSchema
+);
+export const WeatherData = model<IWeatherDataDoc, IWeatherDataModel>(
+  "weather_data",
+  WeatherDataSchema
+);
+export const User = model<IUserDoc, IUserModel>("users", UserSchema);
+export const Gate = model<IGateDoc, IGateModel>("gates", GateSchema);
+export const TrafficReturn = model<ITrafficReturnDoc, ITrafficReturnModel>(
+  "traffic_returns",
+  TrafficReturnSchema
+);
