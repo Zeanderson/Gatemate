@@ -16,7 +16,7 @@ function AnalysisBox() {
     <div className="flex flex-col gap-4 p-4 items-center w-[21.8rem]">
       <h1>Field Analysis</h1>
       <button
-        className="rounded-xl p-4 bg-Corp2 flex flex-row gap-2 items-center min-w-full"
+        className="rounded-xl p-4 bg-Corp2 flex flex-row gap-2 items-center min-w-full hover:bg-Corp4 transition-colors"
         onClick={() => (window.location.href = "/field")}
       >
         <FontAwesomeIcon
@@ -27,7 +27,7 @@ function AnalysisBox() {
         <p className="text-white">Field 3</p>
       </button>
       <button
-        className="rounded-xl p-4 bg-Corp2 flex flex-row gap-2 items-center min-w-full"
+        className="rounded-xl p-4 bg-Corp2 flex flex-row gap-2 items-center min-w-full hover:bg-Corp4 transition-colors"
         onClick={() => (window.location.href = "/field")}
       >
         <FontAwesomeIcon
@@ -38,7 +38,7 @@ function AnalysisBox() {
         <p className="text-white">Field 2</p>
       </button>
       <button
-        className="rounded-xl p-4 bg-Corp2 flex flex-row gap-2 items-center min-w-full"
+        className="rounded-xl p-4 bg-Corp2 flex flex-row gap-2 items-center min-w-full hover:bg-Corp4 transition-colors"
         onClick={() => (window.location.href = "/field")}
       >
         <FontAwesomeIcon

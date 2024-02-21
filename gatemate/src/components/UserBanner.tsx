@@ -32,6 +32,7 @@ export function UserBanner(props: BannerProps) {
     >
       <h1>{props.userName}</h1>
       <button
+        className="hover:bg-Corp2 transition-colors rounded-lg p-2"
         onClick={() => {
           setDropdownVisible(!dropdownVisible);
         }}

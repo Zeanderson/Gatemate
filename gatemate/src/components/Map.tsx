@@ -3,7 +3,13 @@ import { useState } from "react";
 import { Feature } from "geojson";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckSquare, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckSquare,
+  faCircleXmark,
+  faDoorOpen,
+  faLink,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 
 function Field(cords: number[][]) {
   const geoJsonField: Feature = {
@@ -36,6 +42,7 @@ function GLMap() {
   ]);
   //
 
+  const [showSettings, setShowSettings] = useState(false);
   const [addField, setAddField] = useState(false);
   const [fieldCords, setFieldCords] = useState<number[][]>([]);
   const [addedFields, setAddedFields] = useState<Feature[]>([
@@ -101,7 +108,7 @@ function GLMap() {
                 <button
                   className="text-green-500"
                   onClick={() => {
-                    window.location.href = `/field`;
+                    setShowSettings(true);
                   }}
                 >
                   <FontAwesomeIcon icon={faCheckSquare} size="4x" />
@@ -111,9 +118,8 @@ function GLMap() {
           );
         })}
       </Map>
-      <div className="absolute top-4 right-4 border rounded-xl p-2 bg-Corp3 border-Corp2 text-Corp1 flex flex-col gap-2">
+      <div className="absolute top-4 right-4 border rounded-xl p-4 bg-Corp3 border-Corp2 hover:bg-Corp2 hover:border-Corp3 transition-colors text-Corp1 flex flex-col gap-2">
         <button
-          className="hover:bg-Corp2 transition-colors rounded-xl p-4"
           onClick={() => {
             {
               addField
@@ -123,6 +129,7 @@ function GLMap() {
             setAddField(!addField);
           }}
         >
+          {/*//TODO Add a exit functionality here, so people dont HAVE TO submit */}
           {addField ? (
             <div className="flex flex-col gap-2">
               <p>Submit Field</p>
@@ -142,6 +149,43 @@ function GLMap() {
           )}
         </button>
       </div>
+
+      {showSettings ? (
+        <>
+          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-10 z-50 outline-none focus:outline-none">
+            <div className="bg-Corp3 rounded-xl p-6 items-center flex flex-col gap-6 border-Corp2 border">
+              <h1>Field Settings</h1>
+              <div className="flex flex-col gap-2">
+                <button
+                  className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center justify-between"
+                  onClick={() => {
+                    setShowSettings(false);
+                    window.location.href = "/field";
+                  }}
+                >
+                  <p>Field Dashboard</p>
+                  <FontAwesomeIcon icon={faLink} size="xl" />
+                </button>
+
+                <button className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center justify-between">
+                  <p>Delete Field</p>
+                  <FontAwesomeIcon icon={faCircleXmark} size="xl" />
+                </button>
+              </div>
+
+              <button
+                className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center"
+                onClick={() => {
+                  setShowSettings(false);
+                }}
+              >
+                <p>Close</p>
+                <FontAwesomeIcon icon={faDoorOpen} size="xl" />
+              </button>
+            </div>
+          </div>
+        </>
+      ) : null}
     </div>
   );
 }
