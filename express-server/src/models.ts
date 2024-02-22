@@ -159,6 +159,7 @@ const UserSchema = new Schema<IUserDoc>(
   {
     email: String,
     password: String,
+    fields: [FieldSchema],
   },
   {
     strict: "throw",
@@ -212,6 +213,7 @@ export const WeatherData = model<IWeatherDataDoc, IWeatherDataModel>(
 );
 export const User = model<IUserDoc, IUserModel>("users", UserSchema);
 export const Gate = model<IGateDoc, IGateModel>("gates", GateSchema);
+export const Field = model<IFieldDoc, IFieldModel>("fields", FieldSchema);
 export const TrafficReturn = model<ITrafficReturnDoc, ITrafficReturnModel>(
   "traffic_returns",
   TrafficReturnSchema

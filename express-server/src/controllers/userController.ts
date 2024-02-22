@@ -1,5 +1,5 @@
 import { IDailyWeather, IWeatherData, IUser } from "../interfaces";
-import { DailyWeather, WeatherData, User } from "../models"; 
+import { DailyWeather, WeatherData, User } from "../models";
 import { Router } from "express";
 import * as argon2 from "argon2";
 
@@ -19,16 +19,16 @@ declare module "express-session" {
 
 userRouter.get("/session", async (req, res) => {
   if (req.session.user) {
-    res.send({user: req.session.user.email, status: "200"});
+    res.send({ user: req.session.user.email, status: "200" });
   } else {
-    res.send({status: "404"});
+    res.send({ status: "404" });
   }
-})
+});
 
 userRouter.post("/login", async (req, res) => {
   try {
     const user: IUser = req.body;
-    const existingUser = await User.findOne({ 'email': user.email }); 
+    const existingUser = await User.findOne({ email: user.email });
 
     if (existingUser) {
       const verified = await verifyPassword(user, existingUser.password);
@@ -37,13 +37,14 @@ userRouter.post("/login", async (req, res) => {
         req.session.user = {
           email: existingUser.email,
           password: existingUser.password,
+          fields: existingUser.fields,
         };
         res.send({ message: "Login successful", status: "200" });
       } else {
         res.send({ message: "Login failed", status: "404" });
       }
     } else {
-      res.send({ message: "User not found", status: "404"});
+      res.send({ message: "User not found", status: "404" });
     }
   } catch (error) {
     console.error(error);
@@ -54,21 +55,19 @@ userRouter.post("/login", async (req, res) => {
 userRouter.post("/register", async (req, res) => {
   try {
     const user: IUser = req.body;
-    const existingUser = await User.findOne({ 'email': user.email }); 
+    const existingUser = await User.findOne({ email: user.email });
 
     if (existingUser) {
       res.send({ message: "User already exists", status: "400" });
     } else {
       const hashedPassword = await hashPassword(user);
 
-      await User.create(
-        {
-          email: user.email, 
-          password: hashedPassword, 
-        }
-      ); 
+      await User.create({
+        email: user.email,
+        password: hashedPassword,
+      });
 
-      res.send({ message: "User Created", status:"201" });
+      res.send({ message: "User Created", status: "201" });
     }
   } catch (error) {
     console.error(error);
@@ -78,7 +77,7 @@ userRouter.post("/register", async (req, res) => {
 
 userRouter.get("/logout", async (req, res) => {
   if (req.session.user === undefined) {
-    res.send({ message: "No user logged in", status: "200"});
+    res.send({ message: "No user logged in", status: "200" });
     return;
   }
   req.session.destroy((err) => {
@@ -86,7 +85,7 @@ userRouter.get("/logout", async (req, res) => {
       console.error(err);
       res.status(500).send({ message: "Internal server error" });
     } else {
-      res.send({ message: "User logged out", status:"200" });
+      res.send({ message: "User logged out", status: "200" });
     }
   });
 });

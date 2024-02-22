@@ -1,6 +1,4 @@
 import { Document, Model } from "mongoose";
-import { Gate } from "./models";
-
 /*
 * IF YOU WANT TO ADD A TYPE: 
   Suppose you want to add a type with name <type>. Then: 
@@ -96,6 +94,7 @@ export interface IWeatherData {
 export interface IUser {
   email: string;
   password: string;
+  fields: IField[];
 }
 
 export interface IGate {

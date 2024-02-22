@@ -1,5 +1,6 @@
 import express from "express";
 import homeRouter from "./controllers/weatherController";
+import gateRouter from "./controllers/gateController";
 import dotenv from "dotenv";
 dotenv.config();
 import session from "express-session";
@@ -29,6 +30,7 @@ app.use(express.json());
 //TODO app.use('/api/v1/signup', signupController);
 app.use("/api/v1/home", homeRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/gate", gateRouter);
 
 // Start the server
 app.listen(PORT, () => {
