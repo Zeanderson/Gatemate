@@ -49,6 +49,7 @@ function GLMap() {
     testField1,
     testField2,
   ]);
+  const [activeField, setActiveField] = useState<Feature | null>(null);
   return (
     <div className="relative">
       <Map
@@ -109,6 +110,7 @@ function GLMap() {
                   className="text-green-500"
                   onClick={() => {
                     setShowSettings(true);
+                    setActiveField(field);
                   }}
                 >
                   <FontAwesomeIcon icon={faCheckSquare} size="4x" />
@@ -117,37 +119,73 @@ function GLMap() {
             </Source>
           );
         })}
+
+        {fieldCords.map((cord, index) => {
+          return (
+            <Marker
+              key={index}
+              style={{ position: "absolute" }}
+              longitude={cord[0]}
+              latitude={cord[1]}
+            >
+              <div className="bg-Corp1 rounded-full h-4 w-4"></div>
+            </Marker>
+          );
+        })}
       </Map>
-      <div className="absolute top-4 right-4 border rounded-xl p-4 bg-Corp3 border-Corp2 hover:bg-Corp2 hover:border-Corp3 transition-colors text-Corp1 flex flex-col gap-2">
-        <button
-          onClick={() => {
-            {
-              addField
-                ? setAddedFields([...addedFields, Field(fieldCords)])
-                : setFieldCords([]);
-            }
-            setAddField(!addField);
-          }}
-        >
-          {/*//TODO Add a exit functionality here, so people dont HAVE TO submit */}
-          {addField ? (
-            <div className="flex flex-col gap-2">
-              <p>Submit Field</p>
+      <div className="absolute top-4 right-4 border rounded-xl p-2 bg-Corp3 border-Corp2 text-Corp1 flex flex-col gap-2">
+        {addField ? (
+          <div className="flex flex-col items-center">
+            <div className="flex flex-row gap-2 items-center">
+              <button
+                className="hover:border-Corp3 hover:bg-Corp2 transition-colors rounded-xl p-2"
+                onClick={() => {
+                  fieldCords.length < 1
+                    ? setAddField(!addField)
+                    : setAddedFields([...addedFields, Field(fieldCords)]),
+                    setFieldCords([]),
+                    setAddField(!addField);
+                }}
+              >
+                <p>Submit Field</p>
+              </button>
+              <button
+                className="hover:text-Corp2"
+                onClick={() => {
+                  setFieldCords([]);
+                  setAddField(!addField);
+                }}
+              >
+                <FontAwesomeIcon icon={faCircleXmark} size="lg" />
+              </button>
+            </div>
+
+            <table>
               {fieldCords.map((cord, index) => (
-                <div key={index} className="flex flex-row gap-1 text-xs">
-                  <p>Cord {index + 1}</p>
-                  <p>{cord[0].toFixed(3)}</p>
-                  <p>{cord[1].toFixed(3)}</p>
-                </div>
+                <tr key={index} className="text-xs border border-white">
+                  <td className="p-1 border border-white">Cord {index + 1}</td>
+                  <td className="p-1">{cord[0].toFixed(3)}</td>
+                  <td className="p-1">{cord[1].toFixed(3)}</td>
+                </tr>
               ))}
-            </div>
-          ) : (
-            <div className="flex flex-row gap-2">
-              <p>Add Field</p>
-              <FontAwesomeIcon icon={faPlus} size="lg" />
-            </div>
-          )}
-        </button>
+            </table>
+          </div>
+        ) : (
+          <button
+            className="flex flex-row gap-2 items-center hover:border-Corp3 hover:bg-Corp2 transition-colors rounded-xl p-3"
+            onClick={() => {
+              {
+                addField
+                  ? setAddedFields([...addedFields, Field(fieldCords)])
+                  : setFieldCords([]);
+              }
+              setAddField(!addField);
+            }}
+          >
+            <p>Add Field</p>
+            <FontAwesomeIcon icon={faPlus} size="lg" />
+          </button>
+        )}
       </div>
 
       {showSettings ? (
@@ -167,7 +205,16 @@ function GLMap() {
                   <FontAwesomeIcon icon={faLink} size="xl" />
                 </button>
 
-                <button className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center justify-between">
+                <button
+                  className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center justify-between"
+                  onClick={() => {
+                    if (activeField) {
+                      addedFields.splice(addedFields.indexOf(activeField), 1);
+                      setActiveField(null);
+                      setShowSettings(false);
+                    }
+                  }}
+                >
                   <p>Delete Field</p>
                   <FontAwesomeIcon icon={faCircleXmark} size="xl" />
                 </button>
@@ -176,6 +223,7 @@ function GLMap() {
               <button
                 className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center"
                 onClick={() => {
+                  setActiveField(null);
                   setShowSettings(false);
                 }}
               >
