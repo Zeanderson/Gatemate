@@ -6,6 +6,7 @@ dotenv.config();
 import session from "express-session";
 import userRouter from "./controllers/userController";
 import { connect } from "./datasources/db";
+import fieldRouter from "./controllers/fieldController";
 
 const PORT = Number(process.env.port);
 
@@ -31,6 +32,7 @@ app.use(express.json());
 app.use("/api/v1/home", homeRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/gate", gateRouter);
+app.use("/api/v1/field", fieldRouter);
 
 // Start the server
 app.listen(PORT, () => {
