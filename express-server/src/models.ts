@@ -124,6 +124,7 @@ const WeatherDataSchema = new Schema<IWeatherDataDoc>(
 
 const GateSchema = new Schema<IGateDoc>(
   {
+    gateId: Number,
     idealWaterLevel: Number,
     threshold: Number,
     actualWaterLevel: Number,
@@ -191,6 +192,10 @@ WeatherDataSchema.statics.buildWeatherData = (args: IWeatherData) => {
 
 UserSchema.statics.buildUser = (args: IUser) => {
   return new User(args);
+};
+
+FieldSchema.statics.buildField = (args: IField) => {
+  return new Field(args);
 };
 
 GateSchema.statics.buildGate = (args: IGate) => {

@@ -1,14 +1,10 @@
 import { Router, Request, Response } from "express";
-import { User, Field, Gate } from "../models";
+import { User, Field } from "../models";
 
-const gateRouter = Router();
+const fieldRouter = Router();
 
-/*
- * Gate Routes
- */
-
-// Create a new gate for a specific field
-gateRouter.post("/create/:fieldId", async (req: Request, res: Response) => {
+// Create a new field for a specific user
+fieldRouter.post("/create", async (req: Request, res: Response) => {
   try {
     if (!req.session?.user) {
       return res.status(403).send("User not logged in");
@@ -17,22 +13,55 @@ gateRouter.post("/create/:fieldId", async (req: Request, res: Response) => {
     const user = await User.findOne({ email: req.session.user.email });
     if (!user) return res.status(404).send("User not found");
 
-    const fieldId = Number(req.params.fieldId);
-    const field = user.fields.find((field) => field.fieldId === fieldId);
-    if (!field) return res.status(404).send("Field not found");
-
-    const gate = new Gate(req.body);
-    field.Gates.push(gate);
+    const field = new Field(req.body);
+    user.fields.push(field);
 
     await user.save();
-    res.status(201).json(gate);
+    res.status(201).json(field);
   } catch (err) {
     res.status(500).send(err);
   }
 });
 
-// Get all gates for a specific field
-gateRouter.get("/find/:fieldId", async (req: Request, res: Response) => {
+// Get all fields for a specific user
+fieldRouter.get("/", async (req: Request, res: Response) => {
+  try {
+    if (!req.session?.user) {
+      return res.status(403).send("User not logged in");
+    }
+
+    const user = await User.findOne({ email: req.session.user.email });
+    if (!user) return res.status(404).send("User not found");
+
+    res.json(user.fields);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+// Get a single field by id
+fieldRouter.get("/:fieldId", async (req: Request, res: Response) => {
+  try {
+    if (!req.session?.user) {
+      return res.status(403).send("User not logged in");
+    }
+
+    const user = await User.findOne({ email: req.session.user.email });
+    if (!user) return res.status(404).send("User not found");
+
+    const field = user.fields.find(
+      (field) => field.fieldId === Number(req.params.fieldId)
+    );
+    if (!field) return res.status(404).send("Field not found");
+
+    res.json(field);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+// Update a field by id
+fieldRouter.put("/:fieldId", async (req: Request, res: Response) => {
   try {
     if (!req.session?.user) {
       return res.status(403).send("User not logged in");
@@ -45,41 +74,17 @@ gateRouter.get("/find/:fieldId", async (req: Request, res: Response) => {
     const field = user.fields.find((field) => field.fieldId === fieldId);
     if (!field) return res.status(404).send("Field not found");
 
-    res.json(field.Gates);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
-
-// Update a gate by id
-gateRouter.put("/:fieldId/:gateId", async (req: Request, res: Response) => {
-  try {
-    if (!req.session?.user) {
-      return res.status(403).send("User not logged in");
-    }
-
-    const user = await User.findOne({ email: req.session.user.email });
-    if (!user) return res.status(404).send("User not found");
-
-    const fieldId = Number(req.params.fieldId);
-    const field = user.fields.find((field) => field.fieldId === fieldId);
-    if (!field) return res.status(404).send("Field not found");
-
-    const gateId = Number(req.params.gateId);
-    const gate = field.Gates.find((gate) => gate.gateId === gateId);
-    if (!gate) return res.status(404).send("Gate not found");
-
-    Object.assign(gate, req.body);
+    Object.assign(field, req.body);
     await user.save();
 
-    res.json(gate);
+    res.json(field);
   } catch (err) {
     res.status(500).send(err);
   }
 });
 
-// Delete a gate by id
-gateRouter.delete("/:fieldId/:gateId", async (req: Request, res: Response) => {
+// Delete a field by id
+fieldRouter.delete("/:fieldId", async (req: Request, res: Response) => {
   try {
     if (!req.session?.user) {
       return res.status(403).send("User not logged in");
@@ -89,14 +94,12 @@ gateRouter.delete("/:fieldId/:gateId", async (req: Request, res: Response) => {
     if (!user) return res.status(404).send("User not found");
 
     const fieldId = Number(req.params.fieldId);
-    const field = user.fields.find((field) => field.fieldId === fieldId);
-    if (!field) return res.status(404).send("Field not found");
+    const fieldIndex = user.fields.findIndex(
+      (field) => field.fieldId === fieldId
+    );
+    if (fieldIndex === -1) return res.status(404).send("Field not found");
 
-    const gateId = Number(req.params.gateId);
-    const gateIndex = field.Gates.findIndex((gate) => gate.gateId === gateId);
-    if (gateIndex === -1) return res.status(404).send("Gate not found");
-
-    field.Gates.splice(gateIndex, 1);
+    user.fields.splice(fieldIndex, 1);
     await user.save();
 
     res.status(204).send();
@@ -104,4 +107,5 @@ gateRouter.delete("/:fieldId/:gateId", async (req: Request, res: Response) => {
     res.status(500).send(err);
   }
 });
-export default gateRouter;
+
+export default fieldRouter;

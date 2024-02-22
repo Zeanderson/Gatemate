@@ -98,6 +98,7 @@ export interface IUser {
 }
 
 export interface IGate {
+  gateId: number;
   idealWaterLevel: number;
   threshold: number;
   actualWaterLevel: number;
