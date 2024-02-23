@@ -24,6 +24,7 @@ function Register() {
   const [reenterPassword, setReenterPassword] = useState<string>("");
   const [inputError, setInputError] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<boolean>(false);
   // const [emailError, setEmailError] = useState<boolean>(false);
   // const [passwordError, setPasswordError] = useState<boolean>(false);
 
@@ -44,7 +45,7 @@ function Register() {
             <FontAwesomeIcon size={"2xl"} icon={faUserPlus} />
             <h1 className="text-3xl text-center">Sign Up</h1>
           </div>
-          <div className="flex flex-col gap-4">
+          <form id="form" className="flex flex-col gap-4">
             <input
               id="firstName"
               placeholder="First Name"
@@ -86,8 +87,9 @@ function Register() {
               value={reenterPassword}
               onChange={(event) => setReenterPassword(event.target.value)}
             />
-            {inputError ? <p className="text-red-500">{error}</p> : null}
-          </div>
+            {inputError ? <p className="text-red-500 text-center text-xs italic">{error}</p> : null}
+            {success ? <p className="text-green-500 text-center">Success</p> : null}
+          </form>
 
           <button
             onClick={() => {
@@ -99,20 +101,27 @@ function Register() {
                 reenterPassword === ""
               ) {
                 setInputError(true);
-                setError("Please fill in all fields");
+                setSuccess(false);
+                setError("One or more fields are empty");
               } else if (
                 !/^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(email)
               ) {
                 setInputError(true);
-                setError("Invalid Email Format");
+                setSuccess(false);
+                setError("Please enter a valid email address");
               } else if (password !== reenterPassword) {
                 setInputError(true);
-                setError("Passwords Do Not Match");
+                setSuccess(false);
+                setError("Passwords do not match");
               } else if (password.length < 8) {
                 setInputError(true);
-                setError("Password Strength Too Low");
+                setSuccess(false);
+                setError("Password must be at least 8 characters");
               } else {
                 registerUser(email, password);
+                setSuccess(true);
+                setInputError(false);
+                window.location.href = "/";
               }
             }}
             className="border border-solid rounded-xl p-1 hover:bg-Corp3 hover:border-Corp3"
