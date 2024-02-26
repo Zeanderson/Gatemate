@@ -105,6 +105,7 @@ export interface IGate {
   connectionError: boolean;
   lowBattery: boolean;
   status: string;
+  location: { lat: number; lon: number };
 }
 
 export interface ITrafficReturn {

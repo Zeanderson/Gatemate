@@ -21,7 +21,11 @@ gateRouter.post("/create/:fieldId", async (req: Request, res: Response) => {
     const field = user.fields.find((field) => field.fieldId === fieldId);
     if (!field) return res.status(404).send("Field not found");
 
-    const gate = new Gate(req.body);
+    const gate = new Gate({
+      ...req.body,
+      gateId: field.Gates.length + 1, // Auto generate gateId based on the number of existing gates
+    });
+
     field.Gates.push(gate);
 
     await user.save();

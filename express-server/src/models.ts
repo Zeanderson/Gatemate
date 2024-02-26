@@ -131,6 +131,7 @@ const GateSchema = new Schema<IGateDoc>(
     connectionError: Schema.Types.Boolean,
     lowBattery: Schema.Types.Boolean,
     status: String,
+    location: { lat: Number, lon: Number },
   },
   {
     strict: "throw",
