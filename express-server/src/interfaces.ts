@@ -115,7 +115,6 @@ export interface ITrafficReturn {
 
 export interface IField {
   fieldId: number;
-  userId: number;
   location: { lat: number; lon: number }[];
   Gates: IGate[];
 }

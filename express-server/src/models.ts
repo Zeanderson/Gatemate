@@ -141,9 +141,9 @@ const GateSchema = new Schema<IGateDoc>(
 const FieldSchema = new Schema<IFieldDoc>(
   {
     fieldId: Number,
-    userId: Number,
     location: [
       {
+        _id: false,
         lat: Number,
         lon: Number,
       },
