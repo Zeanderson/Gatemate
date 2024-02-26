@@ -97,6 +97,10 @@ export interface IUser {
   fields: IField[];
 }
 
+export interface ISessionUser {
+  email: string;
+}
+
 export interface IGate {
   gateId: number;
   idealWaterLevel: number;

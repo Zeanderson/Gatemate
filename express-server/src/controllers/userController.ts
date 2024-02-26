@@ -1,4 +1,4 @@
-import { IDailyWeather, IWeatherData, IUser } from "../interfaces";
+import { IUser, ISessionUser } from "../interfaces";
 import { DailyWeather, WeatherData, User } from "../models";
 import { Router } from "express";
 import * as argon2 from "argon2";
@@ -34,10 +34,8 @@ userRouter.post("/login", async (req, res) => {
       const verified = await verifyPassword(user, existingUser.password);
 
       if (verified) {
-        req.session.user = {
+        (req.session.user as ISessionUser) = {
           email: existingUser.email,
-          password: existingUser.password,
-          fields: existingUser.fields,
         };
         res.send({ message: "Login successful", status: "200" });
       } else {
