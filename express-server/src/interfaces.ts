@@ -1,5 +1,4 @@
-import {Document, Model} from 'mongoose'; 
-
+import { Document, Model } from "mongoose";
 /*
 * IF YOU WANT TO ADD A TYPE: 
   Suppose you want to add a type with name <type>. Then: 
@@ -24,11 +23,10 @@ import {Document, Model} from 'mongoose';
 * See ./datasources/db.ts for information on how to use these types in code 
 */
 
-// TODO: Add restrictions for fields based on what we need, e.g. forcing a field to be unique, 
-// TODO: adding bounds to a field, etc. 
+// TODO: Add restrictions for fields based on what we need, e.g. forcing a field to be unique,
+// TODO: adding bounds to a field, etc.
 
-
-// * Interface Definitions 
+// * Interface Definitions
 export interface IDailyWeather {
   dt: number;
   sunrise: number;
@@ -64,7 +62,7 @@ export interface IDailyWeather {
   pop: number;
   rain: number;
   uvi: number;
-};
+}
 
 export interface IWeatherData {
   presentDay: {
@@ -91,54 +89,72 @@ export interface IWeatherData {
   day7: {
     weather: IDailyWeather;
   };
-};
+}
 
 export interface IUser {
   email: string;
   password: string;
-};
+  fields: IField[];
+}
+
+export interface ISessionUser {
+  email: string;
+}
 
 export interface IGate {
-  idealWaterLevel: number,
-  threshold: number,
-  actualWaterLevel: number,
-  connectionError: boolean,
-  lowBattery: boolean,
-  status: string
-}; 
+  gateId: number;
+  idealWaterLevel: number;
+  threshold: number;
+  actualWaterLevel: number;
+  connectionError: boolean;
+  lowBattery: boolean;
+  status: string;
+  location: { lat: number; lon: number };
+}
 
 export interface ITrafficReturn {
-  userId: number,
-  fieldId: number,
-  gates: IGate[],
-}; 
+  userId: number;
+  fieldId: number;
+  gates: IGate[];
+}
 
-// * Document Definitions 
+export interface IField {
+  fieldId: number;
+  location: { lat: number; lon: number }[];
+  Gates: IGate[];
+}
 
-export interface IDailyWeatherDoc  extends IDailyWeather,  Document {}; 
-export interface IWeatherDataDoc   extends IWeatherData,   Document {}; 
-export interface IUserDoc          extends IUser,          Document {}; 
-export interface IGateDoc          extends IGate,          Document {}; 
-export interface ITrafficReturnDoc extends ITrafficReturn, Document {}; 
+// * Document Definitions
 
-// * Model Definitions and declaration of builder methods 
+export interface IDailyWeatherDoc extends IDailyWeather, Document {}
+export interface IWeatherDataDoc extends IWeatherData, Document {}
+export interface IUserDoc extends IUser, Document {}
+export interface IGateDoc extends IGate, Document {}
+export interface ITrafficReturnDoc extends ITrafficReturn, Document {}
+export interface IFieldDoc extends IField, Document {}
+
+// * Model Definitions and declaration of builder methods
 
 export interface IDailyWeatherModel extends Model<IDailyWeatherDoc> {
-  buildDailyWeather(args: IDailyWeather): IDailyWeatherDoc; 
+  buildDailyWeather(args: IDailyWeather): IDailyWeatherDoc;
 }
 
 export interface IWeatherDataModel extends Model<IWeatherDataDoc> {
-  buildWeatherData(args: IWeatherData): IWeatherDataDoc; 
+  buildWeatherData(args: IWeatherData): IWeatherDataDoc;
 }
 
 export interface IUserModel extends Model<IUserDoc> {
-  buildUser(args: IUser): IUserDoc; 
+  buildUser(args: IUser): IUserDoc;
 }
 
 export interface IGateModel extends Model<IGateDoc> {
-  buildGate(args: IGate): IGateDoc; 
+  buildGate(args: IGate): IGateDoc;
 }
 
 export interface ITrafficReturnModel extends Model<ITrafficReturnDoc> {
-  buildTrafficReturn(args: ITrafficReturn) : ITrafficReturnDoc; 
+  buildTrafficReturn(args: ITrafficReturn): ITrafficReturnDoc;
+}
+
+export interface IFieldModel extends Model<IFieldDoc> {
+  buildTrafficReturn(args: IField): IFieldDoc;
 }
