@@ -23,7 +23,11 @@ function Field(cords: number[][]) {
   return geoJsonField;
 }
 
-function GLMap() {
+type mapType = {
+  className?: string;
+};
+
+function GLMap({ className }: mapType) {
   //
   const testField1 = Field([
     [-94.178, 32.069],
@@ -51,7 +55,11 @@ function GLMap() {
   ]);
   const [activeField, setActiveField] = useState<Feature | null>(null);
   return (
-    <div className="relative">
+    <div
+      className={
+        "relative border-4 border-solid rounded-3xl border-Corp3 " + className
+      }
+    >
       <Map
         onClick={(e) => {
           addField

@@ -27,8 +27,6 @@ app.use(
 );
 app.use(express.json());
 
-//TODO app.use('/api/v1/login', loginController);
-//TODO app.use('/api/v1/signup', signupController);
 app.use("/api/v1/home", homeRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/gate", gateRouter);
