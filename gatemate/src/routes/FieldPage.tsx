@@ -5,6 +5,7 @@ import GLMap from "../components/Map";
 import AnalysisBox from "../components/Analysis";
 import WeatherBanner from "../components/WeatherBanner";
 import UserBanner from "../components/UserBanner";
+import GrowthChart from "../components/GrowthChart";
 
 function checkSession() {
   return useQuery({
@@ -16,16 +17,16 @@ function checkSession() {
   });
 }
 
-function Header() {
-  return (
-    <div className="flex flex-row gap-2 font-Arvo font-bold">
-      <WeatherBanner className={"flex flex-row gap-8 basis-11/12 "}>
-        <div>{"Weather"}</div>
-      </WeatherBanner>
-      <UserBanner userName={"Field 1"} className={"basis-1/12"} />
-    </div>
-  );
-}
+// function Header() {
+//   return (
+//     <div className="flex flex-row gap-2 font-Arvo font-bold">
+//       <WeatherBanner className={"flex flex-row gap-8 basis-11/12 "}>
+//         <div>{"Weather"}</div>
+//       </WeatherBanner>
+//       <UserBanner userName={"Field 1"} className={"basis-1/12"} />
+//     </div>
+//   );
+// }
 
 function Map() {
   return (
@@ -68,9 +69,12 @@ function FieldPage() {
   // Session found can move on!
   if (session.data.status === "200") {
     return (
-      <div className={"flex flex-col gap-2 p-2"}>
-        <Header />
-        <Body />
+      // <div className={"flex flex-col gap-2 p-2"}>
+      //   <Header />
+      //   <Body />
+      // </div>
+      <div>
+        <GrowthChart />
       </div>
     );
   }
