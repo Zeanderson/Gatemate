@@ -33,9 +33,9 @@ type mapType = {
 //TODO Change types to what API wants === [{} {} {}] NOT [[] [] []]
 //TODO Change input to the new type
 async function createField(cords: number[][]) {
-  cords.forEach((cord) => {
-    console.log(cord);
-  });
+  // cords.forEach((cord) => {
+  //   console.log(cord);
+  // });
 
   try {
     const response = await axios.post(
@@ -92,6 +92,23 @@ function getFields() {
   });
 }
 
+type GateInfoType = {
+  gateId: number;
+  idealWaterLevel: number;
+  threshold: number;
+  actualWaterLevel: number;
+  connectionError: boolean;
+  lowBattery: boolean;
+  status: string;
+  location: { lat: number; lon: number };
+}
+
+type FieldInfoType = {
+  fieldId: number;
+  location: { lat: number; lon: number }[];
+  Gates: GateInfoType[];
+}
+
 function GLMap({ className }: mapType) {
   const testField1 = Field([
     [-94.178, 32.069],
@@ -126,13 +143,7 @@ function GLMap({ className }: mapType) {
   }
 
   if (fields.data.status === "200") {
-    // console.log(fields.data.message);
     const userFields = fields.data.message;
-
-    userFields.forEach((field: Feature) => {
-      //TODO Start here and go change the preset fields to be these that are from DB
-      console.log(field);
-    });
     return (
       <div
         className={
@@ -161,22 +172,31 @@ function GLMap({ className }: mapType) {
           }}
           mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
         >
-          {addedFields.map((field, index) => {
+          {userFields.map((field: FieldInfoType, index: number) => {
+            let cords: number[][] = []
+            field.location.forEach((location) => {
+              cords.push([location.lat, location.lon])
+            })
+
+            const fieldFeature = Field(cords)
+
             // Accessing the coordinates of the polygon
-            const coordinates = (field.geometry as any).coordinates[0];
+            const coordinates = (fieldFeature.geometry as any).coordinates[0];
 
             // Calculating the centroid of the polygon
-            let centroidX = 0;
-            let centroidY = 0;
-            for (let i = 0; i < coordinates.length; i++) {
-              centroidX += coordinates[i][0];
-              centroidY += coordinates[i][1];
-            }
-            centroidX /= coordinates.length;
-            centroidY /= coordinates.length;
+            // let centroidX = 0;
+            // let centroidY = 0;
+            // for (let i = 0; i < coordinates.length; i++) {
+            //   centroidX += coordinates[i][0];
+            //   centroidY += coordinates[i][1];
+            // }
+            // centroidX /= coordinates.length;
+            // centroidY /= coordinates.length;
+
+            console.log(field.location[0].lon)
 
             return (
-              <Source type="geojson" data={field} key={index}>
+              <Source type="geojson" data={fieldFeature} key={index}>
                 <Layer
                   id={`polygon${index}`}
                   type="fill"
@@ -185,24 +205,22 @@ function GLMap({ className }: mapType) {
                     "fill-opacity": 0.8,
                   }}
                 />
-                <Marker
+                {/* <Marker
                   style={{ position: "absolute" }}
-                  longitude={centroidX}
-                  latitude={centroidY}
+                  longitude={field.location[0].lon ?? -84.153}
+                  latitude={field.location[0].lat ?? 32.069}
                 >
-                  <h1 className="text-xl text-black font-Arvo">{`Field ${
-                    index + 1
-                  }`}</h1>
+                  <h1 className="text-xl text-black font-Arvo">{`Field ${field.fieldId}`}</h1>
                   <button
                     className="text-green-500"
                     onClick={() => {
                       setShowSettings(true);
-                      setActiveField(field);
+                      setActiveField(fieldFeature);
                     }}
                   >
                     <FontAwesomeIcon icon={faCheckSquare} size="4x" />
                   </button>
-                </Marker>
+                </Marker> */}
               </Source>
             );
           })}
