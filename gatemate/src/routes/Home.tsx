@@ -17,6 +17,10 @@ function checkSession() {
   });
 }
 
+function getUser() {
+  //TODO - Get user data
+}
+
 function Header() {
   return (
     <div className={"flex flex-row gap-2 font-Arvo font-bold"}>

@@ -7,17 +7,17 @@ const fieldRouter = Router();
 fieldRouter.post("/create", async (req: Request, res: Response) => {
   try {
     if (!req.session?.user) {
-      return res.status(403).send("User not logged in");
+      return res.send({ message: "User not logged in", status: "403"})
     }
 
     const user = await User.findOne({ email: req.session.user.email });
-    if (!user) return res.status(404).send("User not found");
+    if (!user) { return res.send({ message: "User not found", status: "404"}) }
 
     const field = new Field({
       fieldId: user.fields.length + 1, // Auto generate fieldId based on the number of existing fields
-      location: req.body.location.map((coord: [number, number]) => ({
-        lat: coord[0],
-        lon: coord[1],
+      location: req.body.location.map((cord: {lat: number, lon: number}) => ({
+        lat: cord.lat,
+        lon: cord.lon
       })),
       Gates: [],
     });
@@ -25,24 +25,23 @@ fieldRouter.post("/create", async (req: Request, res: Response) => {
     user.fields.push(field);
     await user.save();
 
-    res.status(201).json(field);
+    // res.status(201).json(field);
+    res.send({ message: "Field created", status: "201" })
   } catch (err) {
     res.status(500).send(err);
   }
 });
 
 // Get all fields for a specific user
-fieldRouter.get("/", async (req: Request, res: Response) => {
+fieldRouter.get("/fieldInfo", async (req: Request, res: Response) => {
   try {
-    console.log(req.session);
     if (!req.session?.user) {
-      return res.status(403).send("User not logged in");
+      return res.send({ message: "User not logged in", status: "403" })
     }
-
     const user = await User.findOne({ email: req.session.user.email });
-    if (!user) return res.status(404).send("User not found");
+    if (!user) { return res.send({ message: "User not found", status: "404"}) }
 
-    res.json(user.fields);
+    res.send({ message: user.fields, status: "200" })
   } catch (err) {
     res.status(500).send(err);
   }
