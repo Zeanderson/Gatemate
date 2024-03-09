@@ -92,6 +92,8 @@ export interface IWeatherData {
 }
 
 export interface IUser {
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   fields: IField[];
@@ -126,12 +128,12 @@ export interface IField {
 
 // * Document Definitions
 
-export interface IDailyWeatherDoc extends IDailyWeather, Document {}
-export interface IWeatherDataDoc extends IWeatherData, Document {}
-export interface IUserDoc extends IUser, Document {}
-export interface IGateDoc extends IGate, Document {}
-export interface ITrafficReturnDoc extends ITrafficReturn, Document {}
-export interface IFieldDoc extends IField, Document {}
+export interface IDailyWeatherDoc extends IDailyWeather, Document { }
+export interface IWeatherDataDoc extends IWeatherData, Document { }
+export interface IUserDoc extends IUser, Document { }
+export interface IGateDoc extends IGate, Document { }
+export interface ITrafficReturnDoc extends ITrafficReturn, Document { }
+export interface IFieldDoc extends IField, Document { }
 
 // * Model Definitions and declaration of builder methods
 

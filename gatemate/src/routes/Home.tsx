@@ -7,6 +7,16 @@ import ClipLoader from "react-spinners/ClipLoader";
 import AnalysisBox from "../components/Analysis";
 import "@reach/combobox/styles.css";
 
+type UserData = {
+  firstName: string,
+  lastName: string,
+  email: string,
+}
+
+type HeaderProps = {
+  user: UserData
+}
+
 function checkSession() {
   return useQuery({
     queryKey: ["session"],
@@ -18,14 +28,22 @@ function checkSession() {
 }
 
 function getUser() {
-  //TODO - Get user data
+  return useQuery({
+    queryKey: ["user"],
+    queryFn: async () => {
+      const data = await axios.get("/api/v1/user/getUser", {
+        withCredentials: true,
+      });
+      return data.data;
+    },
+  });
 }
 
-function Header() {
+function Header({ user }: HeaderProps) {
   return (
     <div className={"flex flex-row gap-2 font-Arvo font-bold"}>
       <WeatherBanner className={"basis-11/12"} />
-      <UserBanner userName={"Welcome Jeremiah"} className={"basis-1/12"} />
+      <UserBanner userName={`Welcome ${user.firstName}`} className={"basis-1/12"} />
     </div>
   );
 }
@@ -44,16 +62,18 @@ function Body() {
 
 function Home() {
   const session = checkSession();
+  const userData = getUser()
 
-  if (session.isLoading || session.data === undefined) {
+  if (session.isLoading || session.data === undefined || userData.isLoading || userData.data === undefined) {
     return <ClipLoader />;
   }
 
   // Session found can move on!
   if (session.data.status === "200") {
+    const user: UserData = userData.data
     return (
       <div className="flex flex-col gap-2 p-2">
-        <Header />
+        <Header user={user} />
         <Body />
       </div>
     );

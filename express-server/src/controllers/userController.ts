@@ -61,6 +61,8 @@ userRouter.post("/register", async (req, res) => {
       const hashedPassword = await hashPassword(user);
 
       await User.create({
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         password: hashedPassword,
       });
@@ -86,6 +88,21 @@ userRouter.get("/logout", async (req, res) => {
       res.send({ message: "User logged out", status: "200" });
     }
   });
+});
+
+userRouter.get("/getUser", async (req, res) => {
+  try {
+    if (!req.session?.user) {
+      return res.send({ message: "User not logged in", status: "403" })
+    }
+
+    const user = await User.findOne({ email: req.session.user.email })
+    if (!user) { return res.send({ message: "User not found", status: "404" }) }
+
+    res.json(user)
+  } catch (err) {
+    res.send({ message: err, status: "500" })
+  }
 });
 
 /*

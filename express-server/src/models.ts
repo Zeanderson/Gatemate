@@ -159,6 +159,8 @@ const FieldSchema = new Schema<IFieldDoc>(
 
 const UserSchema = new Schema<IUserDoc>(
   {
+    firstName: String,
+    lastName: String,
     email: String,
     password: String,
     fields: [FieldSchema],

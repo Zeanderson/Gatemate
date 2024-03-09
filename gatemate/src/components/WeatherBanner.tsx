@@ -224,9 +224,10 @@ export function WeatherBanner(props: BannerProps) {
           <ComboboxInput
             className="bg-Corp2 rounded-md p-2"
             spellCheck={false}
+            placeholder="Fayetteville"
           />
           <ComboboxPopover className="bg-Corp2 p-2">
-            <ComboboxList defaultValue={"Hello"}>
+            <ComboboxList>
               <ComboboxOption
                 className="hover:bg-slate-500 rounded-md transition-colors "
                 value="Fayetteville"

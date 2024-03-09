@@ -115,7 +115,6 @@ function GLMap({ className }: MapType) {
   const queryClient = useQueryClient()
 
   if (refetch) {
-    console.log("refetchign")
     queryClient.invalidateQueries({
       queryKey: ["fields"],
       refetchType: 'all' // refetch both active and inactive queries

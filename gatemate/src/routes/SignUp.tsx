@@ -4,9 +4,11 @@ import backgroundImage from "../images/blue-agri-vector.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 
-async function registerUser(email: string, pass: string) {
+async function registerUser(email: string, pass: string, firstName: string, lastName: string) {
   try {
     const response = await axios.post("/api/v1/user/register", {
+      firstName: firstName,
+      lastName: lastName,
       email: email,
       password: pass,
     });
@@ -118,7 +120,7 @@ function Register() {
                 setSuccess(false);
                 setError("Password must be at least 8 characters");
               } else {
-                registerUser(email, password);
+                registerUser(email, password, firstName, lastName);
                 setSuccess(true);
                 setInputError(false);
                 window.location.href = "/";
