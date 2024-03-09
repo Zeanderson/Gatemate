@@ -24,7 +24,7 @@ function getUser() {
 function Header() {
   return (
     <div className={"flex flex-row gap-2 font-Arvo font-bold"}>
-      {/* <WeatherBanner className={"basis-11/12"} /> */}
+      <WeatherBanner className={"basis-11/12"} />
       <UserBanner userName={"Welcome Jeremiah"} className={"basis-1/12"} />
     </div>
   );

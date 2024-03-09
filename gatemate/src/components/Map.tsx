@@ -1,5 +1,5 @@
 import { Layer, Map, Marker, Source } from "react-map-gl";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useState } from "react";
 import { Feature } from "geojson";
@@ -14,6 +14,32 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
+type GateInfoType = {
+  gateId: number;
+  idealWaterLevel: number;
+  threshold: number;
+  actualWaterLevel: number;
+  connectionError: boolean;
+  lowBattery: boolean;
+  status: string;
+  location: { lat: number; lon: number };
+}
+
+type FieldInfoType = {
+  fieldId: number;
+  location: { lat: number; lon: number }[];
+  Gates: GateInfoType[];
+}
+
+type MapType = {
+  className?: string;
+};
+
+type LocationType = {
+  lat: number,
+  lon: number
+}
+
 function Field(cords: number[][]) {
   const geoJsonField: Feature = {
     type: "Feature",
@@ -26,35 +52,17 @@ function Field(cords: number[][]) {
   return geoJsonField;
 }
 
-type mapType = {
-  className?: string;
-};
-
-//TODO Change types to what API wants === [{} {} {}] NOT [[] [] []]
-//TODO Change input to the new type
 async function createField(cords: number[][]) {
-  // cords.forEach((cord) => {
-  //   console.log(cord);
-  // });
+  let location: LocationType[] = []
+  cords.forEach((cord) => {
+    location.push({ lat: cord[0], lon: cord[1] })
+  });
 
   try {
     const response = await axios.post(
       "/api/v1/field/create",
       {
-        location: [
-          {
-            lat: 52.52,
-            lon: 13.405,
-          },
-          {
-            lat: 48.8566,
-            lon: 2.3522,
-          },
-          {
-            lat: 51.5074,
-            lon: -0.1278,
-          },
-        ],
+        location: location
       },
       {
         withCredentials: true,
@@ -67,10 +75,9 @@ async function createField(cords: number[][]) {
   }
 }
 
-//TODO Change for params to be a field ID, then handle if not found
-async function deleteField() {
+async function deleteField(fieldId: number) {
   try {
-    const response = await axios.delete("/api/v1/field/4", {
+    const response = await axios.delete(`/api/v1/field/${fieldId}`, {
       withCredentials: true,
     });
     return response.data;
@@ -92,58 +99,41 @@ function getFields() {
   });
 }
 
-type GateInfoType = {
-  gateId: number;
-  idealWaterLevel: number;
-  threshold: number;
-  actualWaterLevel: number;
-  connectionError: boolean;
-  lowBattery: boolean;
-  status: string;
-  location: { lat: number; lon: number };
-}
-
-type FieldInfoType = {
-  fieldId: number;
-  location: { lat: number; lon: number }[];
-  Gates: GateInfoType[];
-}
-
-function GLMap({ className }: mapType) {
-  const testField1 = Field([
-    [-94.178, 32.069],
-    [-94.174, 32.064],
-    [-94.165, 32.064],
-    [-94.164, 32.068],
-    [-94.171, 32.072],
-  ]);
-  const testField2 = Field([
-    [-94.153, 32.081],
-    [-94.155, 32.079],
-    [-94.159, 32.077],
-    [-94.155, 32.072],
-    [-94.149, 32.074],
-    [-94.15, 32.079],
-  ]);
-  //
-
+function GLMap({ className }: MapType) {
   const [showSettings, setShowSettings] = useState(false);
   const [addField, setAddField] = useState(false);
   const [fieldCords, setFieldCords] = useState<number[][]>([]);
-  const [addedFields, setAddedFields] = useState<Feature[]>([
-    testField1,
-    testField2,
-  ]);
-  const [activeField, setActiveField] = useState<Feature | null>(null);
+  const [activeField, setActiveField] = useState<FieldInfoType>();
+  const [refetch, setRefetch] = useState(false)
+
+  const bareField: FieldInfoType = {
+    fieldId: -1,
+    location: [],
+    Gates: []
+  }
+
+  const queryClient = useQueryClient()
+
+  if (refetch) {
+    console.log("refetchign")
+    queryClient.invalidateQueries({
+      queryKey: ["fields"],
+      refetchType: 'all' // refetch both active and inactive queries
+    });
+
+    setRefetch(!refetch)
+  }
 
   const fields = getFields();
 
-  if (fields.isLoading) {
+  if (fields.isLoading || fields.data.message === undefined) {
     return <ClipLoader />;
   }
 
+
   if (fields.data.status === "200") {
-    const userFields = fields.data.message;
+    const userFields: FieldInfoType[] = fields.data.message;
+
     return (
       <div
         className={
@@ -173,27 +163,37 @@ function GLMap({ className }: mapType) {
           mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
         >
           {userFields.map((field: FieldInfoType, index: number) => {
-            let cords: number[][] = []
+            const cords: number[][] = []
+            let iconLong = -94.160583
+            let iconLat = 32.061932;
             field.location.forEach((location) => {
-              cords.push([location.lat, location.lon])
+              const existingCoord = cords.find(coord => coord[0] === location.lat && coord[1] === location.lon);
+              if (!existingCoord) {
+                cords.push([location.lat, location.lon])
+              }
             })
 
             const fieldFeature = Field(cords)
 
-            // Accessing the coordinates of the polygon
-            const coordinates = (fieldFeature.geometry as any).coordinates[0];
+            if (fieldFeature.geometry.type === 'Polygon' && fieldFeature.geometry.coordinates[0][0][0] && fieldFeature.geometry.coordinates[0][0][1]) {
+              const vertices = fieldFeature.geometry.coordinates[0]; // Extracting the vertices of the polygon
+              let totalX = 0;
+              let totalY = 0;
 
-            // Calculating the centroid of the polygon
-            // let centroidX = 0;
-            // let centroidY = 0;
-            // for (let i = 0; i < coordinates.length; i++) {
-            //   centroidX += coordinates[i][0];
-            //   centroidY += coordinates[i][1];
-            // }
-            // centroidX /= coordinates.length;
-            // centroidY /= coordinates.length;
+              // Calculating the total sum of x and y coordinates
+              for (let i = 0; i < vertices.length; i++) {
+                totalX += vertices[i][0];
+                totalY += vertices[i][1];
+              }
 
-            console.log(field.location[0].lon)
+              // Calculating the average of x and y coordinates
+              const centerLong = totalX / vertices.length;
+              const centerLat = totalY / vertices.length;
+
+              // Assigning the center coordinates
+              iconLong = centerLong;
+              iconLat = centerLat;
+            }
 
             return (
               <Source type="geojson" data={fieldFeature} key={index}>
@@ -205,24 +205,24 @@ function GLMap({ className }: mapType) {
                     "fill-opacity": 0.8,
                   }}
                 />
-                {/* <Marker
+                <Marker
                   style={{ position: "absolute" }}
-                  longitude={field.location[0].lon ?? -84.153}
-                  latitude={field.location[0].lat ?? 32.069}
+                  longitude={iconLong}
+                  latitude={iconLat}
                 >
                   <h1 className="text-xl text-black font-Arvo">{`Field ${field.fieldId}`}</h1>
                   <button
                     className="text-green-500"
                     onClick={() => {
                       setShowSettings(true);
-                      setActiveField(fieldFeature);
+                      setActiveField(field);
                     }}
                   >
                     <FontAwesomeIcon icon={faCheckSquare} size="4x" />
                   </button>
-                </Marker> */}
+                </Marker>
               </Source>
-            );
+            )
           })}
 
           {fieldCords.map((cord, index) => {
@@ -246,10 +246,13 @@ function GLMap({ className }: mapType) {
                   className="hover:border-Corp3 hover:bg-Corp2 transition-colors rounded-xl p-2"
                   onClick={() => {
                     fieldCords.length < 1
-                      ? setAddField(!addField)
-                      : setAddedFields([...addedFields, Field(fieldCords)]),
-                      setFieldCords([]),
-                      setAddField(!addField);
+                      ?
+                      setAddField(!addField)
+                      :
+                      createField(fieldCords)
+                    setFieldCords([]),
+                      setAddField(!addField),
+                      setRefetch(true)
                   }}
                 >
                   <p>Submit Field</p>
@@ -266,15 +269,17 @@ function GLMap({ className }: mapType) {
               </div>
 
               <table>
-                {fieldCords.map((cord, index) => (
-                  <tr key={index} className="text-xs border border-white">
-                    <td className="p-1 border border-white">
-                      Cord {index + 1}
-                    </td>
-                    <td className="p-1">{cord[0].toFixed(3)}</td>
-                    <td className="p-1">{cord[1].toFixed(3)}</td>
-                  </tr>
-                ))}
+                <tbody>
+                  {fieldCords.map((cord, index) => (
+                    <tr key={index} className="text-xs border border-white">
+                      <td className="p-1 border border-white">
+                        Cord {index + 1}
+                      </td>
+                      <td className="p-1">{cord[0].toFixed(3)}</td>
+                      <td className="p-1">{cord[1].toFixed(3)}</td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
             </div>
           ) : (
@@ -283,7 +288,7 @@ function GLMap({ className }: mapType) {
               onClick={() => {
                 {
                   addField
-                    ? setAddedFields([...addedFields, Field(fieldCords)])
+                    ? null
                     : setFieldCords([]);
                 }
                 setAddField(!addField);
@@ -316,9 +321,10 @@ function GLMap({ className }: mapType) {
                     className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center justify-between"
                     onClick={() => {
                       if (activeField) {
-                        addedFields.splice(addedFields.indexOf(activeField), 1);
-                        setActiveField(null);
+                        deleteField(activeField.fieldId)
+                        setActiveField(bareField);
                         setShowSettings(false);
+                        setRefetch(true)
                       }
                     }}
                   >
@@ -330,7 +336,7 @@ function GLMap({ className }: mapType) {
                 <button
                   className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center"
                   onClick={() => {
-                    setActiveField(null);
+                    setActiveField(bareField);
                     setShowSettings(false);
                   }}
                 >
