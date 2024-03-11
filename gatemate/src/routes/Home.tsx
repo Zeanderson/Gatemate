@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import UserBanner from "../components/UserBanner";
 import WeatherBanner from "../components/WeatherBanner";
-import GLMap from "../components/Map";
+import MainGLMap from "../components/MainMap";
 import ClipLoader from "react-spinners/ClipLoader";
-import AnalysisBox from "../components/Analysis";
+import HomeAnalysisBox from "../components/HomeAnalysis";
 import "@reach/combobox/styles.css";
 
 type UserData = {
@@ -51,8 +51,8 @@ function Header({ user }: HeaderProps) {
 function Body() {
   return (
     <div className={"flex flex-row gap-2 font-Arvo font-bold"}>
-      <GLMap className="basis-10/12" />
-      <AnalysisBox className="basis-2/12" />
+      <MainGLMap className="basis-10/12" />
+      <HomeAnalysisBox className="basis-2/12" />
     </div>
   );
 }

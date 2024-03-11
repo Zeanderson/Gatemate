@@ -39,17 +39,17 @@ gateRouter.post("/create/:fieldId", async (req: Request, res: Response) => {
 gateRouter.get("/find/:fieldId", async (req: Request, res: Response) => {
   try {
     if (!req.session?.user) {
-      return res.status(403).send("User not logged in");
+      return res.send({ message: "User not logged in", status: "403" })
     }
 
     const user = await User.findOne({ email: req.session.user.email });
-    if (!user) return res.status(404).send("User not found");
+    if (!user) { return res.send({ message: "User not found", status: "404" }) }
 
     const fieldId = Number(req.params.fieldId);
     const field = user.fields.find((field) => field.fieldId === fieldId);
-    if (!field) return res.status(404).send("Field not found");
+    if (!field) { return res.send({ message: "Field not found", status: "404" }) }
 
-    res.json(field.Gates);
+    res.send({ message: field.Gates, status: "200" })
   } catch (err) {
     res.status(500).send(err);
   }

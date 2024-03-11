@@ -42,7 +42,7 @@ function Signin() {
 
   // Session found, send to home page with email
   if (session.data.status === "200") {
-    window.location.href = `/home?user=${session.data.user}`;
+    window.location.href = `/home`;
   }
 
   // No session found
@@ -91,7 +91,7 @@ function Signin() {
               onClick={() => {
                 checkAuth(email, password).then((data) => {
                   if (data.status === "200") {
-                    window.location.href = `/home?user=${email}`;
+                    window.location.href = `/home`;
                   }
                   if (data.status === "404") {
                     setShown(true);

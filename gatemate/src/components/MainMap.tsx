@@ -100,7 +100,7 @@ function getFields() {
   });
 }
 
-function GLMap({ className }: MapType) {
+function MainGLMap({ className }: MapType) {
   const [showSettings, setShowSettings] = useState(false);
   const [addField, setAddField] = useState(false);
   const [fieldCords, setFieldCords] = useState<number[][]>([]);
@@ -357,4 +357,4 @@ function GLMap({ className }: MapType) {
   }
 }
 
-export default GLMap;
+export default MainGLMap;

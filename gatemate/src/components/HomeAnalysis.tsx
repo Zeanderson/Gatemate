@@ -41,7 +41,7 @@ function getFields() {
   });
 }
 
-function AnalysisBox({ className }: analysisType) {
+function HomeAnalysisBox({ className }: analysisType) {
 
   const fields = getFields()
 
@@ -64,7 +64,7 @@ function AnalysisBox({ className }: analysisType) {
               <button
                 key={index}
                 className="rounded-xl p-4 bg-Corp2 flex flex-row gap-2 items-center min-w-full hover:bg-Corp4 transition-colors"
-                onClick={() => (window.location.href = "/field")}
+                onClick={() => (window.location.href = `/field?id=${field.fieldId}`)}
               >
                 <FontAwesomeIcon
                   className="text-green-500"
@@ -110,4 +110,4 @@ function AnalysisBox({ className }: analysisType) {
 
 }
 
-export default AnalysisBox;
+export default HomeAnalysisBox;

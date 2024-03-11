@@ -1,10 +1,11 @@
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import FieldGLMap from "../components/FieldMap";
+import GateAnalysisBox from "../components/GateAnalysis";
+import GateBanner from "../components/GateBanner";
 import ClipLoader from "react-spinners/ClipLoader";
-import GLMap from "../components/Map";
-import AnalysisBox from "../components/Analysis";
-import WeatherBanner from "../components/WeatherBanner";
-import UserBanner from "../components/UserBanner";
+import "@reach/combobox/styles.css";
+
 
 function checkSession() {
   return useQuery({
@@ -16,49 +17,10 @@ function checkSession() {
   });
 }
 
-function Header() {
-  return (
-    <div className="flex flex-row gap-2 font-Arvo font-bold">
-      <WeatherBanner className={"flex flex-row gap-8 basis-11/12 "}>
-        <div>{"Weather"}</div>
-      </WeatherBanner>
-      <UserBanner userName={"Field 1"} className={"basis-1/12"} />
-    </div>
-  );
-}
+// The "Top Level" component ( really the bottom function on the page ) is the one that is exported, and usually we do not want ~logic there
+// We only want to render the data, so we create a new component called Weather that will handle the logic and rendering of the data ( This keeps organzation clean, and debugging easy )
 
-function Map() {
-  return (
-    <div className="flex flex-col gap-2">
-      <div>
-        <GLMap />
-      </div>
-    </div>
-  );
-}
-
-function FieldAnalysis() {
-  return (
-    <div>
-      <AnalysisBox />
-    </div>
-  );
-}
-
-function Body() {
-  return (
-    <div className={"flex flex-row gap-2 font-Arvo font-bold min-h-2xl"}>
-      <div className={"bg-indigo-950 items-center rounded-xl p-5 basis-2/3"}>
-        <Map />
-      </div>
-      <div className={"bg-indigo-950 items-center rounded-xl p-5 basis-1/3"}>
-        <FieldAnalysis />
-      </div>
-    </div>
-  );
-}
-
-function FieldPage() {
+function Home() {
   const session = checkSession();
 
   if (session.isLoading || session.data === undefined) {
@@ -68,16 +30,22 @@ function FieldPage() {
   // Session found can move on!
   if (session.data.status === "200") {
     return (
-      <div className={"flex flex-col gap-2 p-2"}>
-        <Header />
-        <Body />
+      <div className="flex flex-col gap-2 p-2">
+        <div className="flex flex-row gap-2 font-Arvo font-bold">
+          <FieldGLMap className="basis-10/12" />
+          <div className="flex flex-col gap-1 basis-2/12">
+            <GateBanner />
+            <GateAnalysisBox />
+          </div>
+        </div>
       </div>
     );
   }
+
   // Session not found, go back to sign-in
   if (session.data.status === "404") {
     window.location.href = `/`;
   }
 }
 
-export default FieldPage;
+export default Home;
