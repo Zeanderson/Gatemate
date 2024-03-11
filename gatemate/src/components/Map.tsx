@@ -6,6 +6,7 @@ import { Feature } from "geojson";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faCheckCircle,
   faCheckSquare,
   faCircleXmark,
   faDoorOpen,
@@ -225,6 +226,7 @@ function GLMap({ className }: MapType) {
           })}
 
           {fieldCords.map((cord, index) => {
+            //!TODO Make the inside of markers a button with a FontAwesome icon for borders, and onClick needs to delete that cord out of the map, so if people mess up placing
             return (
               <Marker
                 key={index}
@@ -239,33 +241,8 @@ function GLMap({ className }: MapType) {
         </Map>
         <div className="absolute top-4 right-4 border rounded-xl p-2 bg-Corp3 border-Corp2 text-Corp1 flex flex-col gap-2">
           {addField ? (
-            <div className="flex flex-col items-center">
-              <div className="flex flex-row gap-2 items-center">
-                <button
-                  className="hover:border-Corp3 hover:bg-Corp2 transition-colors rounded-xl p-2"
-                  onClick={() => {
-                    fieldCords.length < 1
-                      ?
-                      setAddField(!addField)
-                      :
-                      createField(fieldCords)
-                    setFieldCords([]),
-                      setAddField(!addField),
-                      setRefetch(true)
-                  }}
-                >
-                  <p>Submit Field</p>
-                </button>
-                <button
-                  className="hover:text-Corp2"
-                  onClick={() => {
-                    setFieldCords([]);
-                    setAddField(!addField);
-                  }}
-                >
-                  <FontAwesomeIcon icon={faCircleXmark} size="lg" />
-                </button>
-              </div>
+            <div className="flex flex-col items-center gap-3">
+              <p>Place markers to outline field</p>
 
               <table>
                 <tbody>
@@ -280,6 +257,35 @@ function GLMap({ className }: MapType) {
                   ))}
                 </tbody>
               </table>
+
+              <div className="flex flex-row gap-2 items-center">
+                {fieldCords.length > 2 ? (<button
+                  className="hover:border-Corp3 hover:bg-Corp2 transition-colors rounded-xl flex flex-row gap-2 p-2"
+                  onClick={() => {
+                    fieldCords.length < 3
+                      ?
+                      setAddField(!addField)
+                      :
+                      createField(fieldCords)
+                    setFieldCords([]),
+                      setAddField(!addField),
+                      setRefetch(true)
+                  }}
+                >
+                  <p>Submit Field</p>
+                  <FontAwesomeIcon icon={faCheckCircle} size='lg' />
+                </button>) : null}
+                <button
+                  className="hover:border-Corp3 hover:bg-Corp2 transition-colors rounded-xl flex flex-row gap-2 p-2"
+                  onClick={() => {
+                    setFieldCords([]);
+                    setAddField(!addField);
+                  }}
+                >
+                  <p>Cancel</p>
+                  <FontAwesomeIcon icon={faCircleXmark} size="lg" />
+                </button>
+              </div>
             </div>
           ) : (
             <button
