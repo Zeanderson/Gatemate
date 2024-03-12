@@ -86,19 +86,19 @@ gateRouter.put("/:fieldId/:gateId", async (req: Request, res: Response) => {
 gateRouter.delete("/:fieldId/:gateId", async (req: Request, res: Response) => {
   try {
     if (!req.session?.user) {
-      return res.status(403).send("User not logged in");
+      return res.send({ message: "User not logged in", status: "403" })
     }
 
     const user = await User.findOne({ email: req.session.user.email });
-    if (!user) return res.status(404).send("User not found");
+    if (!user) return res.send({ message: "User not found", status: "404" })
 
     const fieldId = Number(req.params.fieldId);
     const field = user.fields.find((field) => field.fieldId === fieldId);
-    if (!field) return res.status(404).send("Field not found");
+    if (!field) return res.send({ message: "Field not found", status: "404" })
 
     const gateId = Number(req.params.gateId);
     const gateIndex = field.Gates.findIndex((gate) => gate.gateId === gateId);
-    if (gateIndex === -1) return res.status(404).send("Gate not found");
+    if (gateIndex === -1) return res.send({ message: "Gate not found", status: "404" })
 
     field.Gates.splice(gateIndex, 1);
     await user.save();

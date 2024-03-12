@@ -9,6 +9,7 @@ import {
     faBox,
     faCheckCircle,
     faCircleXmark,
+    faDoorOpen,
     faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -76,6 +77,18 @@ async function createGate(cords: number[], fieldId: string) {
     }
 }
 
+async function deleteGate(fieldId: string, gateId: number) {
+    try {
+        const response = await axios.delete(`/api/v1/gate/${fieldId}/${gateId}`, {
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+        throw error;
+    }
+}
+
 function getField(fieldId: string) {
     return useQuery({
         queryKey: ["field"],
@@ -104,12 +117,22 @@ function FieldGLMap({ className }: MapType) {
     const params = new URLSearchParams(window.location.search)
     const fieldId = params.get("id")
 
-    // const [showSettings, setShowSettings] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
     const [addGate, setAddGate] = useState(false);
     const [gateCords, setGateCords] = useState<number[]>([]);
-    // const [activeGate, setActiveGate] = useState<FieldInfoType>();
+    const [activeGate, setActiveGate] = useState<GateInfoType>();
     const [refetch, setRefetch] = useState(false)
 
+    const bareGate = {
+        gateId: -1,
+        idealWaterLevel: -1,
+        threshold: -1,
+        actualWaterLevel: -1,
+        connectionError: false,
+        lowBattery: false,
+        status: "",
+        location: { lat: -1, lon: -1 }
+    }
 
     const queryClient = useQueryClient()
 
@@ -211,6 +234,10 @@ function FieldGLMap({ className }: MapType) {
                                     latitude={gate.location.lat}
                                 >
                                     <button
+                                        onClick={() => {
+                                            setShowSettings(true)
+                                            setActiveGate(gate)
+                                        }}
                                         className="text-green-500">
                                         <p className="text-xl text-black font-Arvo">{"Gate " + gate.gateId}</p>
                                         <FontAwesomeIcon icon={faBox} size="4x" />
@@ -283,6 +310,45 @@ function FieldGLMap({ className }: MapType) {
                             <FontAwesomeIcon icon={faPlus} size="lg" />
                         </button>
                     )}
+
+
+                    {showSettings ? (
+                        <>
+                            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-10 z-50 outline-none focus:outline-none">
+                                <div className="bg-Corp3 rounded-xl p-6 items-center flex flex-col gap-6 border-Corp2 border">
+                                    <h1>Gate Settings</h1>
+                                    <div className="flex flex-col gap-2">
+                                        <button
+                                            className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center justify-between"
+                                            onClick={() => {
+                                                if (activeGate) {
+                                                    deleteGate(fieldId ?? "", activeGate.gateId)
+                                                    setActiveGate(bareGate);
+                                                    setShowSettings(false);
+                                                    setRefetch(true)
+                                                }
+                                            }}
+                                        >
+                                            <p>Delete Gate</p>
+                                            <FontAwesomeIcon icon={faCircleXmark} size="xl" />
+                                        </button>
+                                    </div>
+
+                                    <button
+                                        className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center"
+                                        onClick={() => {
+                                            setActiveGate(bareGate);
+                                            setShowSettings(false);
+                                        }}
+                                    >
+                                        <p>Close</p>
+                                        <FontAwesomeIcon icon={faDoorOpen} size="xl" />
+                                    </button>
+                                </div>
+                            </div>
+                        </>
+                    ) : null}
+
                 </div>
 
 
