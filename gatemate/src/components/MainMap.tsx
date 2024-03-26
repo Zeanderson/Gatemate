@@ -8,12 +8,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
   faCheckSquare,
+  faCircle,
   faCircleXmark,
   faDoorOpen,
   faLink,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import { getDistance, getCenter } from "geolib";
 
 type GateInfoType = {
   gateId: number;
@@ -24,22 +26,22 @@ type GateInfoType = {
   lowBattery: boolean;
   status: string;
   location: { lat: number; lon: number };
-}
+};
 
 type FieldInfoType = {
   fieldId: number;
   location: { lat: number; lon: number }[];
   Gates: GateInfoType[];
-}
+};
 
 type MapType = {
   className?: string;
 };
 
 type LocationType = {
-  lat: number,
-  lon: number
-}
+  lat: number;
+  lon: number;
+};
 
 function Field(cords: number[][]) {
   const geoJsonField: Feature = {
@@ -54,16 +56,16 @@ function Field(cords: number[][]) {
 }
 
 async function createField(cords: number[][]) {
-  let location: LocationType[] = []
+  let location: LocationType[] = [];
   cords.forEach((cord) => {
-    location.push({ lat: cord[0], lon: cord[1] })
+    location.push({ lat: cord[0], lon: cord[1] });
   });
 
   try {
     const response = await axios.post(
       "/api/v1/field/create",
       {
-        location: location
+        location: location,
       },
       {
         withCredentials: true,
@@ -100,28 +102,36 @@ function getFields() {
   });
 }
 
+//TODO Have settings popup for the field and show what is current
+//TODO Have settings popup for gate and show what is current
+//TODO Have dropdown for field dashboard actually show all, and load the correct field dashboard
+//TODO Update ICON's for maps to be inclusive to color blind
+//TODO Dark and Light mode for theme
+
 function MainGLMap({ className }: MapType) {
   const [showSettings, setShowSettings] = useState(false);
   const [addField, setAddField] = useState(false);
   const [fieldCords, setFieldCords] = useState<number[][]>([]);
   const [activeField, setActiveField] = useState<FieldInfoType>();
-  const [refetch, setRefetch] = useState(false)
+  const [refetch, setRefetch] = useState(false);
+
+  // console.log(fieldCords);
 
   const bareField: FieldInfoType = {
     fieldId: -1,
     location: [],
-    Gates: []
-  }
+    Gates: [],
+  };
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   if (refetch) {
     queryClient.invalidateQueries({
       queryKey: ["fields"],
-      refetchType: 'all' // refetch both active and inactive queries
+      refetchType: "all", // refetch both active and inactive queries
     });
 
-    setRefetch(!refetch)
+    setRefetch(!refetch);
   }
 
   const fields = getFields();
@@ -129,7 +139,6 @@ function MainGLMap({ className }: MapType) {
   if (fields.isLoading || fields.data.message === undefined) {
     return <ClipLoader />;
   }
-
 
   if (fields.data.status === "200") {
     const userFields: FieldInfoType[] = fields.data.message;
@@ -163,37 +172,36 @@ function MainGLMap({ className }: MapType) {
           mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
         >
           {userFields.map((field: FieldInfoType, index: number) => {
-            const cords: number[][] = []
-            let iconLong = -94.160583
-            let iconLat = 32.061932;
+            const cords: number[][] = [];
+            let iconLong = field.location[0].lon;
+            let iconLat = field.location[0].lat;
             field.location.forEach((location) => {
-              const existingCoord = cords.find(coord => coord[0] === location.lat && coord[1] === location.lon);
+              const existingCoord = cords.find(
+                (coord) =>
+                  coord[0] === location.lat && coord[1] === location.lon
+              );
               if (!existingCoord) {
-                cords.push([location.lat, location.lon])
+                cords.push([location.lat, location.lon]);
               }
-            })
+            });
 
-            const fieldFeature = Field(cords)
+            const locationArray: LocationType[] = [];
 
-            if (fieldFeature.geometry.type === 'Polygon' && fieldFeature.geometry.coordinates[0][0][0] && fieldFeature.geometry.coordinates[0][0][1]) {
-              const vertices = fieldFeature.geometry.coordinates[0]; // Extracting the vertices of the polygon
-              let totalX = 0;
-              let totalY = 0;
-
-              // Calculating the total sum of x and y coordinates
-              for (let i = 0; i < vertices.length; i++) {
-                totalX += vertices[i][0];
-                totalY += vertices[i][1];
-              }
-
-              // Calculating the average of x and y coordinates
-              const centerLong = totalX / vertices.length;
-              const centerLat = totalY / vertices.length;
-
-              // Assigning the center coordinates
-              iconLong = centerLong;
-              iconLat = centerLat;
+            for (let i = 0; i < field.location.length; i++) {
+              locationArray.push({
+                lat: field.location[i].lon,
+                lon: field.location[i].lat,
+              });
             }
+
+            const locationCenter = getCenter(locationArray);
+
+            if (locationCenter !== false) {
+              iconLong = locationCenter.longitude;
+              iconLat = locationCenter.latitude;
+            }
+
+            const fieldFeature = Field(cords);
 
             return (
               <Source type="geojson" data={fieldFeature} key={index}>
@@ -222,11 +230,10 @@ function MainGLMap({ className }: MapType) {
                   </button>
                 </Marker>
               </Source>
-            )
+            );
           })}
 
           {fieldCords.map((cord, index) => {
-            //!TODO Make the inside of markers a button with a FontAwesome icon for borders, and onClick needs to delete that cord out of the map, so if people mess up placing
             return (
               <Marker
                 key={index}
@@ -234,7 +241,13 @@ function MainGLMap({ className }: MapType) {
                 longitude={cord[0]}
                 latitude={cord[1]}
               >
-                <div className="bg-Corp1 rounded-full h-4 w-4"></div>
+                <button
+                  onClick={() => {
+                    //TODO When pressed, remove the cord that was pressed from the array, so if a user messes up they can remove it easily
+                  }}
+                >
+                  <FontAwesomeIcon icon={faCircle} size="2x" />
+                </button>
               </Marker>
             );
           })}
@@ -251,30 +264,30 @@ function MainGLMap({ className }: MapType) {
                       <td className="p-1 border border-white">
                         Cord {index + 1}
                       </td>
-                      <td className="p-1">{cord[0].toFixed(3)}</td>
-                      <td className="p-1">{cord[1].toFixed(3)}</td>
+                      <td className="p-1">{cord[0].toFixed(6)}</td>
+                      <td className="p-1">{cord[1].toFixed(6)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
               <div className="flex flex-row gap-2 items-center">
-                {fieldCords.length > 2 ? (<button
-                  className="hover:border-Corp3 hover:bg-Corp2 transition-colors rounded-xl flex flex-row gap-2 p-2"
-                  onClick={() => {
-                    fieldCords.length < 3
-                      ?
-                      setAddField(!addField)
-                      :
-                      createField(fieldCords)
-                    setFieldCords([]),
-                      setAddField(!addField),
-                      setRefetch(true)
-                  }}
-                >
-                  <p>Submit Field</p>
-                  <FontAwesomeIcon icon={faCheckCircle} size='lg' />
-                </button>) : null}
+                {fieldCords.length > 2 ? (
+                  <button
+                    className="hover:border-Corp3 hover:bg-Corp2 transition-colors rounded-xl flex flex-row gap-2 p-2"
+                    onClick={() => {
+                      fieldCords.length < 3
+                        ? setAddField(!addField)
+                        : createField(fieldCords);
+                      setFieldCords([]),
+                        setAddField(!addField),
+                        setRefetch(true);
+                    }}
+                  >
+                    <p>Submit Field</p>
+                    <FontAwesomeIcon icon={faCheckCircle} size="lg" />
+                  </button>
+                ) : null}
                 <button
                   className="hover:border-Corp3 hover:bg-Corp2 transition-colors rounded-xl flex flex-row gap-2 p-2"
                   onClick={() => {
@@ -292,9 +305,7 @@ function MainGLMap({ className }: MapType) {
               className="flex flex-row gap-2 items-center hover:border-Corp3 hover:bg-Corp2 transition-colors rounded-xl p-3"
               onClick={() => {
                 {
-                  addField
-                    ? null
-                    : setFieldCords([]);
+                  addField ? null : setFieldCords([]);
                 }
                 setAddField(!addField);
               }}
@@ -315,7 +326,9 @@ function MainGLMap({ className }: MapType) {
                     className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center justify-between"
                     onClick={() => {
                       setShowSettings(false);
-                      window.location.href = "/field";
+                      window.location.href = activeField
+                        ? `/field?id=${activeField.fieldId}`
+                        : "/field?id=1";
                     }}
                   >
                     <p>Field Dashboard</p>
@@ -326,10 +339,10 @@ function MainGLMap({ className }: MapType) {
                     className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center justify-between"
                     onClick={() => {
                       if (activeField) {
-                        deleteField(activeField.fieldId)
+                        deleteField(activeField.fieldId);
                         setActiveField(bareField);
                         setShowSettings(false);
-                        setRefetch(true)
+                        setRefetch(true);
                       }
                     }}
                   >
