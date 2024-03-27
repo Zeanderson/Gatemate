@@ -7,15 +7,17 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
-  faCheckSquare,
   faCircle,
   faCircleXmark,
   faDoorOpen,
   faLink,
   faPlus,
+  faCircleExclamation,
+  faSquareCheck,
+  faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { getDistance, getCenter } from "geolib";
+import { getCenter } from "geolib";
 
 type GateInfoType = {
   gateId: number;
@@ -103,8 +105,6 @@ function getFields() {
 }
 
 //TODO Have settings popup for the field and show what is current
-//TODO Have settings popup for gate and show what is current
-//TODO Have dropdown for field dashboard actually show all, and load the correct field dashboard
 //TODO Update ICON's for maps to be inclusive to color blind
 //TODO Dark and Light mode for theme
 
@@ -203,6 +203,26 @@ function MainGLMap({ className }: MapType) {
 
             const fieldFeature = Field(cords);
 
+            let yellowGates = 0;
+            let redGates = 0;
+            field.Gates.forEach((gate: GateInfoType) => {
+              if (gate.status === "Yellow") yellowGates++;
+              if (gate.status === "Red") redGates++;
+            });
+
+            let fieldStatus = {
+              color: "text-green-500",
+              icon: faSquareCheck,
+            };
+
+            if (redGates > 0) {
+              fieldStatus.color = "text-red-500";
+              fieldStatus.icon = faCircleExclamation;
+            } else if (yellowGates > 0) {
+              fieldStatus.color = "text-yellow-500";
+              fieldStatus.icon = faTriangleExclamation;
+            }
+
             return (
               <Source type="geojson" data={fieldFeature} key={index}>
                 <Layer
@@ -220,13 +240,13 @@ function MainGLMap({ className }: MapType) {
                 >
                   <h1 className="text-xl text-black font-Arvo">{`Field ${field.fieldId}`}</h1>
                   <button
-                    className="text-green-500"
+                    className={fieldStatus.color}
                     onClick={() => {
                       setShowSettings(true);
                       setActiveField(field);
                     }}
                   >
-                    <FontAwesomeIcon icon={faCheckSquare} size="4x" />
+                    <FontAwesomeIcon icon={fieldStatus.icon} size="4x" />
                   </button>
                 </Marker>
               </Source>

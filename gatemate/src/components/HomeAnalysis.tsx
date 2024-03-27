@@ -21,13 +21,13 @@ type GateInfoType = {
   lowBattery: boolean;
   status: string;
   location: { lat: number; lon: number };
-}
+};
 
 type FieldInfoType = {
   fieldId: number;
   location: { lat: number; lon: number }[];
   Gates: GateInfoType[];
-}
+};
 
 function getFields() {
   return useQuery({
@@ -42,14 +42,11 @@ function getFields() {
 }
 
 function HomeAnalysisBox({ className }: analysisType) {
-
-  const fields = getFields()
-
+  const fields = getFields();
 
   if (fields.isLoading || fields.data.message === undefined) {
     return <ClipLoader />;
   } else {
-
     const userFields: FieldInfoType[] = fields.data.message;
 
     return (
@@ -60,20 +57,42 @@ function HomeAnalysisBox({ className }: analysisType) {
       >
         <div className={"flex flex-col p-4 gap-4 items-center"}>
           {userFields.map((field: FieldInfoType, index: number) => {
+            let yellowGates = 0;
+            let redGates = 0;
+            field.Gates.forEach((gate: GateInfoType) => {
+              if (gate.status === "Yellow") yellowGates++;
+              if (gate.status === "Red") redGates++;
+            });
+
+            let fieldStatus = {
+              color: "text-green-500",
+              icon: faSquareCheck,
+            };
+
+            if (redGates > 0) {
+              fieldStatus.color = "text-red-500";
+              fieldStatus.icon = faCircleExclamation;
+            } else if (yellowGates > 0) {
+              fieldStatus.color = "text-yellow-500";
+              fieldStatus.icon = faTriangleExclamation;
+            }
+
             return (
               <button
                 key={index}
                 className="rounded-xl p-4 bg-Corp2 flex flex-row gap-2 items-center min-w-full hover:bg-Corp4 transition-colors"
-                onClick={() => (window.location.href = `/field?id=${field.fieldId}`)}
+                onClick={() =>
+                  (window.location.href = `/field?id=${field.fieldId}`)
+                }
               >
                 <FontAwesomeIcon
-                  className="text-green-500"
-                  icon={faSquareCheck}
+                  className={fieldStatus.color}
+                  icon={fieldStatus.icon}
                   size="2x"
                 />
                 <p className="text-white">{"Field " + field.fieldId}</p>
               </button>
-            )
+            );
           })}
         </div>
 
@@ -106,8 +125,6 @@ function HomeAnalysisBox({ className }: analysisType) {
       </div>
     );
   }
-
-
 }
 
 export default HomeAnalysisBox;
