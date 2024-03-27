@@ -243,7 +243,9 @@ function MainGLMap({ className }: MapType) {
               >
                 <button
                   onClick={() => {
+                    // TODO BEN WORK HERE ---------------------------------------------------------- \\
                     //TODO When pressed, remove the cord that was pressed from the array, so if a user messes up they can remove it easily
+                    //TODO ------------------------------------------------------------------------------ \\
                   }}
                 >
                   <FontAwesomeIcon icon={faCircle} size="2x" />
