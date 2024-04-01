@@ -105,8 +105,6 @@ function getFields() {
 }
 
 //TODO Have settings popup for the field and show what is current
-//TODO Update ICON's for maps to be inclusive to color blind
-//TODO Dark and Light mode for theme
 
 function MainGLMap({ className }: MapType) {
   const [showSettings, setShowSettings] = useState(false);
@@ -114,8 +112,6 @@ function MainGLMap({ className }: MapType) {
   const [fieldCords, setFieldCords] = useState<number[][]>([]);
   const [activeField, setActiveField] = useState<FieldInfoType>();
   const [refetch, setRefetch] = useState(false);
-
-  // console.log(fieldCords);
 
   const bareField: FieldInfoType = {
     fieldId: -1,

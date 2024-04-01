@@ -36,6 +36,7 @@ type FieldInfoType = {
 
 type MapType = {
   className?: string;
+  fieldGates: GateInfoType[];
 };
 
 type LocationType = {
@@ -104,23 +105,10 @@ function getField(fieldId: string) {
   });
 }
 
-function getGates(fieldId: string) {
-  return useQuery({
-    queryKey: ["gates"],
-    queryFn: async () => {
-      const data = await axios.get(`/api/v1/gate/find/${fieldId}`, {
-        withCredentials: true,
-      });
-      return data.data;
-    },
-  });
-}
-
 //TODO Have settings popup for gate and show what is current
 //TODO Have dropdown for field dashboard actually show all, and load the correct field dashboard
-//TODO Update ICON's for maps to be inclusive to color blind
 
-function FieldGLMap({ className }: MapType) {
+function FieldGLMap({ className, fieldGates }: MapType) {
   const params = new URLSearchParams(window.location.search);
   const fieldId = params.get("id");
 
@@ -153,20 +141,13 @@ function FieldGLMap({ className }: MapType) {
   }
 
   const field = getField(fieldId ?? "");
-  const gates = getGates(fieldId ?? "");
 
-  if (
-    field.isLoading ||
-    field.data.message === undefined ||
-    gates.isLoading ||
-    gates.data.message === undefined
-  ) {
+  if (field.isLoading || field.data.message === undefined) {
     return <ClipLoader />;
   }
 
   if (field.data.status === "200") {
     const selectedField: FieldInfoType = field.data.message;
-    const fieldGates: GateInfoType[] = gates.data.message;
     const cords: number[][] = [];
     selectedField.location.forEach((location) => {
       const existingCoord = cords.find(

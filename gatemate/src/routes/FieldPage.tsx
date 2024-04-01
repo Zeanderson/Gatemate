@@ -6,6 +6,16 @@ import GateBanner from "../components/GateBanner";
 import ClipLoader from "react-spinners/ClipLoader";
 import "@reach/combobox/styles.css";
 
+type GateInfoType = {
+  gateId: number;
+  idealWaterLevel: number;
+  threshold: number;
+  actualWaterLevel: number;
+  connectionError: boolean;
+  lowBattery: boolean;
+  status: string;
+  location: { lat: number; lon: number };
+};
 
 function checkSession() {
   return useQuery({
@@ -17,32 +27,49 @@ function checkSession() {
   });
 }
 
-// The "Top Level" component ( really the bottom function on the page ) is the one that is exported, and usually we do not want ~logic there
-// We only want to render the data, so we create a new component called Weather that will handle the logic and rendering of the data ( This keeps organzation clean, and debugging easy )
+function getGates(fieldId: string) {
+  return useQuery({
+    queryKey: ["gates"],
+    queryFn: async () => {
+      const data = await axios.get(`/api/v1/gate/find/${fieldId}`, {
+        withCredentials: true,
+      });
+      return data.data;
+    },
+  });
+}
 
 function Home() {
+  const params = new URLSearchParams(window.location.search);
+  const fieldId = params.get("id");
+  const gates = getGates(fieldId ?? "");
   const session = checkSession();
 
-  if (session.isLoading || session.data === undefined) {
+  if (
+    session.isLoading ||
+    session.data === undefined ||
+    gates.isLoading ||
+    gates.data.message === undefined
+  ) {
     return <ClipLoader />;
   }
 
-  // Session found can move on!
-  if (session.data.status === "200") {
+  if (session.data.status === "200" && !gates.isLoading) {
+    const fieldGates: GateInfoType[] = gates.data.message;
+
     return (
       <div className="flex flex-col gap-2 p-2">
         <div className="flex flex-row gap-2 font-Arvo font-bold">
-          <FieldGLMap className="basis-10/12" />
+          <FieldGLMap className="basis-10/12" fieldGates={fieldGates} />
           <div className="flex flex-col gap-1 basis-2/12">
             <GateBanner />
-            <GateAnalysisBox />
+            <GateAnalysisBox fieldGates={fieldGates} />
           </div>
         </div>
       </div>
     );
   }
 
-  // Session not found, go back to sign-in
   if (session.data.status === "404") {
     window.location.href = `/`;
   }

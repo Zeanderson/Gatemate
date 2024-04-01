@@ -4,18 +4,18 @@ import UserBanner from "../components/UserBanner";
 import WeatherBanner from "../components/WeatherBanner";
 import MainGLMap from "../components/MainMap";
 import ClipLoader from "react-spinners/ClipLoader";
-import HomeAnalysisBox from "../components/HomeAnalysis";
+import HomeAnalysisBox from "../components/FieldAnalysis";
 import "@reach/combobox/styles.css";
 
 type UserData = {
-  firstName: string,
-  lastName: string,
-  email: string,
-}
+  firstName: string;
+  lastName: string;
+  email: string;
+};
 
 type HeaderProps = {
-  user: UserData
-}
+  user: UserData;
+};
 
 function checkSession() {
   return useQuery({
@@ -43,7 +43,10 @@ function Header({ user }: HeaderProps) {
   return (
     <div className={"flex flex-row gap-2 font-Arvo font-bold"}>
       <WeatherBanner className={"basis-11/12"} />
-      <UserBanner userName={`Welcome ${user.firstName}`} className={"basis-1/12"} />
+      <UserBanner
+        userName={`Welcome ${user.firstName}`}
+        className={"basis-1/12"}
+      />
     </div>
   );
 }
@@ -59,18 +62,24 @@ function Body() {
 
 // The "Top Level" component ( really the bottom function on the page ) is the one that is exported, and usually we do not want ~logic there
 // We only want to render the data, so we create a new component called Weather that will handle the logic and rendering of the data ( This keeps organzation clean, and debugging easy )
+//TODO Dark and Light mode for theme
 
 function Home() {
   const session = checkSession();
-  const userData = getUser()
+  const userData = getUser();
 
-  if (session.isLoading || session.data === undefined || userData.isLoading || userData.data === undefined) {
+  if (
+    session.isLoading ||
+    session.data === undefined ||
+    userData.isLoading ||
+    userData.data === undefined
+  ) {
     return <ClipLoader />;
   }
 
   // Session found can move on!
   if (session.data.status === "200") {
-    const user: UserData = userData.data
+    const user: UserData = userData.data;
     return (
       <div className="flex flex-col gap-2 p-2">
         <Header user={user} />
