@@ -329,6 +329,106 @@ function FieldGLMap({ className, fieldGates }: MapType) {
               <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-10 z-50 outline-none focus:outline-none">
                 <div className="bg-Corp3 rounded-xl p-6 items-center flex flex-col gap-6 border-Corp2 border">
                   <h1>Gate Settings</h1>
+
+                  <table className="rounded-xl bg-Corp2">
+                    <tbody>
+                      <tr>
+                        <td className="p-2">Gate Health</td>
+                        <td className="p-2">
+                          <div
+                            className={`flex flex-row gap-1 items-center ${
+                              activeGate?.status === "Green"
+                                ? "text-green-500"
+                                : activeGate?.status === "Yellow"
+                                ? "text-yellow-500"
+                                : "text-red-500"
+                            }`}
+                          >
+                            <p>{activeGate?.status}</p>
+                            <FontAwesomeIcon
+                              icon={
+                                activeGate?.status === "Green"
+                                  ? faSquareCheck
+                                  : activeGate?.status === "Yellow"
+                                  ? faTriangleExclamation
+                                  : faCircleExclamation
+                              }
+                              size="lg"
+                            />
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td className="p-2">Connection Error</td>
+                        <td className="p-2">
+                          <div
+                            className={`flex flex-row gap-1 items-center ${
+                              !activeGate?.connectionError
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
+                          >
+                            <p>
+                              {activeGate?.connectionError ? "True" : "False"}
+                            </p>
+                            <FontAwesomeIcon
+                              icon={
+                                !activeGate?.connectionError
+                                  ? faSquareCheck
+                                  : faCircleExclamation
+                              }
+                              size="lg"
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="p-2">Current Water Level</td>
+                        <td className="p-2">
+                          {activeGate?.actualWaterLevel + " inches"}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td className="p-2">Ideal Water Level</td>
+                        <td className="p-2">
+                          {activeGate?.idealWaterLevel + " inches"}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td className="p-2">Water Threshold</td>
+                        <td className="p-2">
+                          {activeGate?.threshold + " inches"}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td className="p-2">Battery Status</td>
+                        <td className="p-2">
+                          <div
+                            className={`flex flex-row gap-1 items-center ${
+                              !activeGate?.lowBattery
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
+                          >
+                            <p>{activeGate?.lowBattery ? "Low" : "Good"}</p>
+                            <FontAwesomeIcon
+                              icon={
+                                !activeGate?.lowBattery
+                                  ? faSquareCheck
+                                  : faCircleExclamation
+                              }
+                              size="lg"
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
                   <div className="flex flex-col gap-2">
                     <button
                       className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center justify-between"
