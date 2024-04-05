@@ -60,11 +60,11 @@ function Home() {
     return (
       <div className="flex flex-col gap-2 p-2">
         <div className="flex flex-row gap-2 font-Arvo font-bold">
-          <FieldGLMap className="basis-10/12" fieldGates={fieldGates} />
           <div className="flex flex-col gap-1 basis-2/12">
             <GateBanner />
             <GateAnalysisBox fieldGates={fieldGates} />
           </div>
+          <FieldGLMap className="basis-10/12" fieldGates={fieldGates} />
         </div>
       </div>
     );

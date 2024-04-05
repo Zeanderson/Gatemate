@@ -6,8 +6,8 @@ import { Feature } from "geojson";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faBox,
   faCheckCircle,
+  faCircle,
   faCircleExclamation,
   faCircleXmark,
   faDoorOpen,
@@ -15,6 +15,8 @@ import {
   faSquareCheck,
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
+import { SiLinuxcontainers } from "react-icons/si";
+import { TiBatteryFull, TiBatteryLow } from "react-icons/ti";
 import axios from "axios";
 
 type GateInfoType = {
@@ -104,9 +106,6 @@ function getField(fieldId: string) {
     },
   });
 }
-
-//TODO Have settings popup for gate and show what is current
-//TODO Have dropdown for field dashboard actually show all, and load the correct field dashboard
 
 function FieldGLMap({ className, fieldGates }: MapType) {
   const params = new URLSearchParams(window.location.search);
@@ -260,12 +259,19 @@ function FieldGLMap({ className, fieldGates }: MapType) {
                         {"Gate " + gate.gateId}
                       </p>
                     </div>
-                    <FontAwesomeIcon icon={faBox} size="4x" />
+                    <SiLinuxcontainers size="5em" />
                   </button>
                 </Marker>
               );
             })}
           </Source>
+          <Marker
+            style={{ position: "absolute" }}
+            longitude={gateCords[0] ?? 0}
+            latitude={gateCords[1] ?? 0}
+          >
+            <FontAwesomeIcon icon={faCircle} size="2x" />
+          </Marker>
         </Map>
         <div className="absolute top-4 right-4 border rounded-xl p-2 bg-Corp3 border-Corp2 text-Corp1 flex flex-col gap-2">
           {addGate ? (
@@ -328,7 +334,14 @@ function FieldGLMap({ className, fieldGates }: MapType) {
             <>
               <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-10 z-50 outline-none focus:outline-none">
                 <div className="bg-Corp3 rounded-xl p-6 items-center flex flex-col gap-6 border-Corp2 border">
-                  <h1>Gate Settings</h1>
+                  <div className="flex flex-col gap-2 items-center">
+                    <h1>Gate Settings</h1>
+                    <h2>{`Gate:  ${activeGate?.gateId}`}</h2>
+                    <p>
+                      Latitude: {activeGate?.location.lat.toFixed(3)} Longitude:{" "}
+                      {activeGate?.location.lon.toFixed(3)}
+                    </p>
+                  </div>
 
                   <table className="rounded-xl bg-Corp2">
                     <tbody>
@@ -336,29 +349,31 @@ function FieldGLMap({ className, fieldGates }: MapType) {
                         <td className="p-2">Gate Health</td>
                         <td className="p-2">
                           <div
-                            className={`flex flex-row gap-1 items-center ${activeGate?.status === "Green"
-                              ? "text-green-500"
-                              : activeGate?.status === "Yellow"
+                            className={`flex flex-row gap-1 items-center ${
+                              activeGate?.status === "Green"
+                                ? "text-green-500"
+                                : activeGate?.status === "Yellow"
                                 ? "text-yellow-500"
                                 : "text-red-500"
-                              }`}
+                            }`}
                           >
                             <FontAwesomeIcon
                               icon={
                                 activeGate?.status === "Green"
                                   ? faSquareCheck
                                   : activeGate?.status === "Yellow"
-                                    ? faTriangleExclamation
-                                    : faCircleExclamation
+                                  ? faTriangleExclamation
+                                  : faCircleExclamation
                               }
                               size="lg"
                             />
-                            <p>{activeGate?.status === "Green"
-                              ? "Good"
-                              : activeGate?.status === "Yellow"
+                            <p>
+                              {activeGate?.status === "Green"
+                                ? "Good"
+                                : activeGate?.status === "Yellow"
                                 ? "Warning"
-                                : "Critical"}</p>
-
+                                : "Critical"}
+                            </p>
                           </div>
                         </td>
                       </tr>
@@ -367,10 +382,11 @@ function FieldGLMap({ className, fieldGates }: MapType) {
                         <td className="p-2">Connection Error</td>
                         <td className="p-2">
                           <div
-                            className={`flex flex-row gap-1 items-center ${!activeGate?.connectionError
-                              ? "text-green-500"
-                              : "text-red-500"
-                              }`}
+                            className={`flex flex-row gap-1 items-center ${
+                              !activeGate?.connectionError
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
                           >
                             <FontAwesomeIcon
                               icon={
@@ -381,9 +397,10 @@ function FieldGLMap({ className, fieldGates }: MapType) {
                               size="lg"
                             />
                             <p>
-                              {activeGate?.connectionError ? "Critical" : "Good"}
+                              {activeGate?.connectionError
+                                ? "Critical"
+                                : "Good"}
                             </p>
-
                           </div>
                         </td>
                       </tr>
@@ -412,21 +429,20 @@ function FieldGLMap({ className, fieldGates }: MapType) {
                         <td className="p-2">Battery Status</td>
                         <td className="p-2">
                           <div
-                            className={`flex flex-row gap-1 items-center ${!activeGate?.lowBattery
-                              ? "text-green-500"
-                              : "text-red-500"
-                              }`}
+                            className={`flex flex-row gap-1 items-center ${
+                              !activeGate?.lowBattery
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
                           >
-                            <FontAwesomeIcon
-                              icon={
-                                !activeGate?.lowBattery
-                                  ? faSquareCheck
-                                  : faCircleExclamation
-                              }
-                              size="lg"
-                            />
+                            <p className="pb-1">
+                              {activeGate?.lowBattery ? (
+                                <TiBatteryLow size="2em" />
+                              ) : (
+                                <TiBatteryFull size="2em" />
+                              )}
+                            </p>
                             <p>{activeGate?.lowBattery ? "Low" : "Good"}</p>
-
                           </div>
                         </td>
                       </tr>

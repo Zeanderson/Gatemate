@@ -54,8 +54,8 @@ function Header({ user }: HeaderProps) {
 function Body() {
   return (
     <div className={"flex flex-row gap-2 font-Arvo font-bold"}>
-      <MainGLMap className="basis-10/12" />
       <HomeAnalysisBox className="basis-2/12" />
+      <MainGLMap className="basis-10/12" />
     </div>
   );
 }

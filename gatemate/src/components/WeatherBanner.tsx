@@ -11,6 +11,7 @@ import {
   faCloudBolt,
   faCloudShowersHeavy,
 } from "@fortawesome/free-solid-svg-icons";
+import { FaChevronDown } from "react-icons/fa";
 import {
   Combobox,
   ComboboxInput,
@@ -211,7 +212,7 @@ export function WeatherBanner(props: BannerProps) {
   const fayWeather: weatherData = fayettevilleWeather.data;
   const simWeather: weatherData = simsboroWeather.data;
   const magWeather: weatherData = magnoliaWeather.data;
-
+  //TODO Chevron actually does NOT make a clickable dropdown, but its there for show fix this :)
   return (
     <div
       className={
@@ -219,10 +220,14 @@ export function WeatherBanner(props: BannerProps) {
         " flex flex-row gap-8 items-center rounded-xl bg-Corp3 py-3 pl-3"
       }
     >
-      <div className={"flex flex-col items-center gap-1 text-xs "}>
+      <div
+        className={
+          "flex flex-row items-center gap-1 text-xs bg-Corp2 rounded-md p-2 "
+        }
+      >
         <Combobox className="lg:max-w-xs" openOnFocus={true}>
           <ComboboxInput
-            className="bg-Corp2 rounded-md p-2"
+            className="bg-Corp2"
             spellCheck={false}
             placeholder="Fayetteville"
           />
@@ -248,6 +253,7 @@ export function WeatherBanner(props: BannerProps) {
             </ComboboxList>
           </ComboboxPopover>
         </Combobox>
+        <FaChevronDown />
       </div>
       {weatherArea === "Fayetteville" ? <WeatherBar {...fayWeather} /> : null}
 

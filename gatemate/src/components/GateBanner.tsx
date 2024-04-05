@@ -9,6 +9,7 @@ import "@reach/combobox/styles.css";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import ClipLoader from "react-spinners/ClipLoader";
+import { FaChevronDown } from "react-icons/fa";
 
 type BannerProps = {
   className?: string;
@@ -54,6 +55,7 @@ export function GateBanner(props: BannerProps) {
 
   if (fields.data.status === "200") {
     const userFields: FieldInfoType[] = fields.data.message;
+    //TODO Chevron actually does NOT make a clickable dropdown, but its there for show fix this :)
     return (
       <div
         className={
@@ -61,10 +63,14 @@ export function GateBanner(props: BannerProps) {
           " flex flex-row justify-between items-center rounded-xl bg-Corp3 py-3 pl-3"
         }
       >
-        <div className={"flex flex-col items-center gap-1 text-xs "}>
+        <div
+          className={
+            "flex flex-row items-center gap-1 text-xs bg-Corp2 rounded-md p-2 "
+          }
+        >
           <Combobox className="lg:max-w-xs" openOnFocus={true}>
             <ComboboxInput
-              className="bg-Corp2 rounded-md p-2"
+              className="bg-Corp2"
               spellCheck={false}
               placeholder={"Field " + fieldId}
             />
@@ -83,7 +89,9 @@ export function GateBanner(props: BannerProps) {
               </ComboboxList>
             </ComboboxPopover>
           </Combobox>
+          <FaChevronDown />
         </div>
+
         <div className="pr-3">
           <button
             onClick={() => (window.location.href = "/home")}
