@@ -47,8 +47,8 @@ function GateAnalysisBox({ className, fieldGates }: analysisType) {
             <button
               key={index}
               className="rounded-xl p-4 bg-Corp2 flex flex-row gap-2 items-center min-w-full hover:bg-Corp4 transition-colors"
-              //TODO Needs to open up the gate settings page
-              // onClick={() => (window.location.href = `/field?id=${fieldId}`)}
+            //TODO Needs to open up the gate settings page
+            // onClick={() => (window.location.href = `/field?id=${fieldId}`)}
             >
               <FontAwesomeIcon
                 className={gateStatus.color}
@@ -68,7 +68,7 @@ function GateAnalysisBox({ className, fieldGates }: analysisType) {
             icon={faSquareCheck}
             size="2x"
           />
-          <h1>No problem</h1>
+          <h1>Good</h1>
         </div>
         <div className="flex flex-row gap-1 items-center">
           <FontAwesomeIcon
@@ -76,7 +76,7 @@ function GateAnalysisBox({ className, fieldGates }: analysisType) {
             icon={faTriangleExclamation}
             size="2x"
           />
-          <h1>Minor</h1>
+          <h1>Warning</h1>
         </div>
         <div className="flex flex-row gap-1 items-center">
           <FontAwesomeIcon
@@ -84,7 +84,7 @@ function GateAnalysisBox({ className, fieldGates }: analysisType) {
             icon={faCircleExclamation}
             size="2x"
           />
-          <h1>Major</h1>
+          <h1>Critical</h1>
         </div>
       </div>
     </div>

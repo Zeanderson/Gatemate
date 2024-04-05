@@ -336,25 +336,29 @@ function FieldGLMap({ className, fieldGates }: MapType) {
                         <td className="p-2">Gate Health</td>
                         <td className="p-2">
                           <div
-                            className={`flex flex-row gap-1 items-center ${
-                              activeGate?.status === "Green"
-                                ? "text-green-500"
-                                : activeGate?.status === "Yellow"
+                            className={`flex flex-row gap-1 items-center ${activeGate?.status === "Green"
+                              ? "text-green-500"
+                              : activeGate?.status === "Yellow"
                                 ? "text-yellow-500"
                                 : "text-red-500"
-                            }`}
+                              }`}
                           >
-                            <p>{activeGate?.status}</p>
                             <FontAwesomeIcon
                               icon={
                                 activeGate?.status === "Green"
                                   ? faSquareCheck
                                   : activeGate?.status === "Yellow"
-                                  ? faTriangleExclamation
-                                  : faCircleExclamation
+                                    ? faTriangleExclamation
+                                    : faCircleExclamation
                               }
                               size="lg"
                             />
+                            <p>{activeGate?.status === "Green"
+                              ? "Good"
+                              : activeGate?.status === "Yellow"
+                                ? "Warning"
+                                : "Critical"}</p>
+
                           </div>
                         </td>
                       </tr>
@@ -363,15 +367,11 @@ function FieldGLMap({ className, fieldGates }: MapType) {
                         <td className="p-2">Connection Error</td>
                         <td className="p-2">
                           <div
-                            className={`flex flex-row gap-1 items-center ${
-                              !activeGate?.connectionError
-                                ? "text-green-500"
-                                : "text-red-500"
-                            }`}
+                            className={`flex flex-row gap-1 items-center ${!activeGate?.connectionError
+                              ? "text-green-500"
+                              : "text-red-500"
+                              }`}
                           >
-                            <p>
-                              {activeGate?.connectionError ? "True" : "False"}
-                            </p>
                             <FontAwesomeIcon
                               icon={
                                 !activeGate?.connectionError
@@ -380,6 +380,10 @@ function FieldGLMap({ className, fieldGates }: MapType) {
                               }
                               size="lg"
                             />
+                            <p>
+                              {activeGate?.connectionError ? "Critical" : "Good"}
+                            </p>
+
                           </div>
                         </td>
                       </tr>
@@ -408,13 +412,11 @@ function FieldGLMap({ className, fieldGates }: MapType) {
                         <td className="p-2">Battery Status</td>
                         <td className="p-2">
                           <div
-                            className={`flex flex-row gap-1 items-center ${
-                              !activeGate?.lowBattery
-                                ? "text-green-500"
-                                : "text-red-500"
-                            }`}
+                            className={`flex flex-row gap-1 items-center ${!activeGate?.lowBattery
+                              ? "text-green-500"
+                              : "text-red-500"
+                              }`}
                           >
-                            <p>{activeGate?.lowBattery ? "Low" : "Good"}</p>
                             <FontAwesomeIcon
                               icon={
                                 !activeGate?.lowBattery
@@ -423,6 +425,8 @@ function FieldGLMap({ className, fieldGates }: MapType) {
                               }
                               size="lg"
                             />
+                            <p>{activeGate?.lowBattery ? "Low" : "Good"}</p>
+
                           </div>
                         </td>
                       </tr>
