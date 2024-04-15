@@ -7,6 +7,7 @@ import session from "express-session";
 import userRouter from "./controllers/userController";
 import { connect } from "./datasources/db";
 import fieldRouter from "./controllers/fieldController";
+import trafficRouter from "./controllers/trafficController";
 
 const PORT = Number(process.env.port);
 
@@ -31,6 +32,7 @@ app.use("/api/v1/home", homeRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/gate", gateRouter);
 app.use("/api/v1/field", fieldRouter);
+app.use("/api/v1/traffic", trafficRouter);
 
 // Start the server
 app.listen(PORT, () => {
