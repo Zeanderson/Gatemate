@@ -6,7 +6,7 @@
 
 - [General Info](#general-info)
 - [Setup](#setup)
-- [Dependencies](#dependencies)
+- [ENV Dependencies](#dependencies)
 - [Cloning](#cloning-repo)
 - [How to run](#how-to-run)
 - [Extension Setup](#extension-setup)
@@ -42,12 +42,9 @@
 ## Dependencies
 
 ```
-cd express-server
-npm install
-cd ..
-cd gatemate
-npm install
-cd ..
+A env-default file is located in both "/express-server" and "/gatemate"
+Copy and paste the contents of this file into a new file called ".env"
+Fill out the respective fields with personalized data
 ```
 
 ## How to run
@@ -55,16 +52,7 @@ cd ..
 - Terminal 1
 
 ```
-cd express-server
-npm run start
-```
-
-- Terminal 2
-
-```
-cd gatemate
-npm run build
-npm run dev
+./start.sh
 ```
 
 ## Extension Setup
