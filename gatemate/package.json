@@ -16,7 +16,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@reach/combobox": "^0.18.0",
-    "@tanstack/react-query": "^5.17.15",
+    "@tanstack/react-query": "^5.29.2",
     "autoprefixer": "^10.4.17",
     "axios": "^1.6.5",
     "dotenv": "^16.4.1",

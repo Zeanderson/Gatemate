@@ -28,7 +28,11 @@ function GateAnalysisBox({ className, fieldGates }: analysisType) {
         className + " flex flex-col justify-between rounded-xl bg-Corp3"
       }
     >
-      <div className={"flex flex-col p-4 gap-4 items-center"}>
+      <div
+        className={
+          "flex flex-col p-4 gap-4 items-center overflow-y-auto max-h-[70rem]"
+        }
+      >
         {fieldGates.map((gate: GateInfoType, index: number) => {
           let gateStatus = {
             color: "text-red-500",
@@ -47,8 +51,8 @@ function GateAnalysisBox({ className, fieldGates }: analysisType) {
             <button
               key={index}
               className="rounded-xl p-4 bg-Corp2 flex flex-row gap-2 items-center min-w-full hover:bg-Corp4 transition-colors"
-            //TODO Needs to open up the gate settings page
-            // onClick={() => (window.location.href = `/field?id=${fieldId}`)}
+              //TODO Needs to open up the gate settings page
+              // onClick={() => (window.location.href = `/field?id=${fieldId}`)}
             >
               <FontAwesomeIcon
                 className={gateStatus.color}

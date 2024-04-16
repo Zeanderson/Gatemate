@@ -336,10 +336,72 @@ function MainGLMap({ className }: MapType) {
 
         {showSettings ? (
           <>
-            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-10 z-50 outline-none focus:outline-none">
-              <div className="bg-Corp3 rounded-xl p-6 items-center flex flex-col gap-6 border-Corp2 border">
-                <h1>Field Settings</h1>
-                <div className="flex flex-col gap-2">
+            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-10 z-50 outline-none focus:outline-none text-Corp1">
+              <div className="bg-Corp3 rounded-xl p-12 items-center flex flex-col gap-6 border-Corp2 border">
+                <div className="flex flex-col gap-2 items-center">
+                  <h1>Field Settings</h1>
+                  <h2>{`Field:  ${activeField?.fieldId}`}</h2>
+                </div>
+
+                <table className="rounded-xl bg-Corp2">
+                  <tbody>
+                    <tr>
+                      <td className="p-3">Field Health</td>
+                      <td className="p-3">
+                        <div
+                          className={`flex flex-row gap-2 items-center ${
+                            activeField?.Gates.some(
+                              (gate) => gate.status === "Red"
+                            )
+                              ? "text-red-500"
+                              : activeField?.Gates.some(
+                                  (gate) => gate.status === "Yellow"
+                                )
+                              ? "text-yellow-500"
+                              : "text-green-500"
+                          }`}
+                        >
+                          <FontAwesomeIcon
+                            icon={
+                              activeField?.Gates.some(
+                                (gate) => gate.status === "Red"
+                              )
+                                ? faCircleExclamation
+                                : activeField?.Gates.some(
+                                    (gate) => gate.status === "Yellow"
+                                  )
+                                ? faTriangleExclamation
+                                : faSquareCheck
+                            }
+                            size="lg"
+                          />
+                          <p>
+                            {activeField?.Gates.some(
+                              (gate) => gate.status === "Red"
+                            )
+                              ? "Critical"
+                              : activeField?.Gates.some(
+                                  (gate) => gate.status === "Yellow"
+                                )
+                              ? "Warning"
+                              : "Good"}
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div className="flex flex-row gap-2">
+                  <button
+                    className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center"
+                    onClick={() => {
+                      setActiveField(bareField);
+                      setShowSettings(false);
+                    }}
+                  >
+                    <p>Close</p>
+                  </button>
                   <button
                     className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center justify-between"
                     onClick={() => {
@@ -350,11 +412,10 @@ function MainGLMap({ className }: MapType) {
                     }}
                   >
                     <p>Field Dashboard</p>
-                    <FontAwesomeIcon icon={faLink} size="xl" />
                   </button>
 
                   <button
-                    className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center justify-between"
+                    className="flex flex-row gap-2 p-3 bg-red-500 hover:bg-red-300 text-Corp3 transition-colors rounded-xl items-center justify-between"
                     onClick={() => {
                       if (activeField) {
                         deleteField(activeField.fieldId);
@@ -365,20 +426,8 @@ function MainGLMap({ className }: MapType) {
                     }}
                   >
                     <p>Delete Field</p>
-                    <FontAwesomeIcon icon={faCircleXmark} size="xl" />
                   </button>
                 </div>
-
-                <button
-                  className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center"
-                  onClick={() => {
-                    setActiveField(bareField);
-                    setShowSettings(false);
-                  }}
-                >
-                  <p>Close</p>
-                  <FontAwesomeIcon icon={faDoorOpen} size="xl" />
-                </button>
               </div>
             </div>
           </>

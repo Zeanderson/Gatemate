@@ -55,7 +55,11 @@ function HomeAnalysisBox({ className }: analysisType) {
           className + " flex flex-col justify-between rounded-xl bg-Corp3"
         }
       >
-        <div className={"flex flex-col p-4 gap-4 items-center"}>
+        <div
+          className={
+            "flex flex-col p-4 gap-4 items-center overflow-y-auto max-h-[70rem]"
+          }
+        >
           {userFields.map((field: FieldInfoType, index: number) => {
             let yellowGates = 0;
             let redGates = 0;

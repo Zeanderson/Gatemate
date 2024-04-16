@@ -10,7 +10,6 @@ import {
   faCircle,
   faCircleExclamation,
   faCircleXmark,
-  faDoorOpen,
   faPlus,
   faSquareCheck,
   faTriangleExclamation,
@@ -83,6 +82,40 @@ async function createGate(cords: number[], fieldId: string) {
   }
 }
 
+async function updateGate(
+  fieldId: string,
+  gateId: number,
+  idealWaterLevel: number,
+  threshold: number,
+  actualWaterLevel: number,
+  connectionError: boolean,
+  lowBattery: boolean,
+  status: string,
+  loc: any
+) {
+  try {
+    const response = await axios.post(
+      `/api/v1/gate/${fieldId}/${gateId}`,
+      {
+        idealWaterLevel: idealWaterLevel,
+        threshold: threshold,
+        actualWaterLevel: actualWaterLevel,
+        connectionError: connectionError,
+        lowBattery: lowBattery,
+        status: status,
+        location: loc,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+}
+
 async function deleteGate(fieldId: string, gateId: number) {
   try {
     const response = await axios.delete(`/api/v1/gate/${fieldId}/${gateId}`, {
@@ -112,10 +145,14 @@ function FieldGLMap({ className, fieldGates }: MapType) {
   const fieldId = params.get("id");
 
   const [showSettings, setShowSettings] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const [addGate, setAddGate] = useState(false);
   const [gateCords, setGateCords] = useState<number[]>([]);
   const [activeGate, setActiveGate] = useState<GateInfoType>();
   const [refetch, setRefetch] = useState(false);
+  const [currentWaterLevel, setCurrentWaterLevel] = useState("");
+  const [idealWaterLevel, setIdealWaterLevel] = useState("");
+  const [threshold, setThreshold] = useState("");
 
   const bareGate = {
     gateId: -1,
@@ -241,7 +278,7 @@ function FieldGLMap({ className, fieldGates }: MapType) {
               }
               return (
                 <Marker
-                  key={index}
+                  key={gate.gateId}
                   style={{ position: "absolute" }}
                   longitude={gate.location.lon}
                   latitude={gate.location.lat}
@@ -266,6 +303,7 @@ function FieldGLMap({ className, fieldGates }: MapType) {
             })}
           </Source>
           <Marker
+            key={gateCords[0]}
             style={{ position: "absolute" }}
             longitude={gateCords[0] ?? 0}
             latitude={gateCords[1] ?? 0}
@@ -333,7 +371,7 @@ function FieldGLMap({ className, fieldGates }: MapType) {
           {showSettings ? (
             <>
               <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-10 z-50 outline-none focus:outline-none">
-                <div className="bg-Corp3 rounded-xl p-6 items-center flex flex-col gap-6 border-Corp2 border">
+                <div className="bg-Corp3 rounded-xl p-12 items-center flex flex-col gap-6 border-Corp2 border">
                   <div className="flex flex-col gap-2 items-center">
                     <h1>Gate Settings</h1>
                     <h2>{`Gate:  ${activeGate?.gateId}`}</h2>
@@ -346,10 +384,10 @@ function FieldGLMap({ className, fieldGates }: MapType) {
                   <table className="rounded-xl bg-Corp2">
                     <tbody>
                       <tr>
-                        <td className="p-2">Gate Health</td>
-                        <td className="p-2">
+                        <td className="p-3">Gate Health</td>
+                        <td className="p-3">
                           <div
-                            className={`flex flex-row gap-1 items-center ${
+                            className={`flex flex-row gap-2 items-center ${
                               activeGate?.status === "Green"
                                 ? "text-green-500"
                                 : activeGate?.status === "Yellow"
@@ -379,10 +417,10 @@ function FieldGLMap({ className, fieldGates }: MapType) {
                       </tr>
 
                       <tr>
-                        <td className="p-2">Connection Error</td>
-                        <td className="p-2">
+                        <td className="p-3">Connection Error</td>
+                        <td className="p-3">
                           <div
-                            className={`flex flex-row gap-1 items-center ${
+                            className={`flex flex-row gap-2 items-center ${
                               !activeGate?.connectionError
                                 ? "text-green-500"
                                 : "text-red-500"
@@ -405,31 +443,31 @@ function FieldGLMap({ className, fieldGates }: MapType) {
                         </td>
                       </tr>
                       <tr>
-                        <td className="p-2">Current Water Level</td>
-                        <td className="p-2">
+                        <td className="p-3">Current Water Level</td>
+                        <td className="p-3">
                           {activeGate?.actualWaterLevel + " inches"}
                         </td>
                       </tr>
 
                       <tr>
-                        <td className="p-2">Ideal Water Level</td>
-                        <td className="p-2">
+                        <td className="p-3">Ideal Water Level</td>
+                        <td className="p-3">
                           {activeGate?.idealWaterLevel + " inches"}
                         </td>
                       </tr>
 
                       <tr>
-                        <td className="p-2">Water Threshold</td>
-                        <td className="p-2">
+                        <td className="p-3">Water Threshold</td>
+                        <td className="p-3">
                           {activeGate?.threshold + " inches"}
                         </td>
                       </tr>
 
                       <tr>
-                        <td className="p-2">Battery Status</td>
-                        <td className="p-2">
+                        <td className="p-3">Battery Status</td>
+                        <td className="p-3">
                           <div
-                            className={`flex flex-row gap-1 items-center ${
+                            className={`flex flex-row gap-2 items-center ${
                               !activeGate?.lowBattery
                                 ? "text-green-500"
                                 : "text-red-500"
@@ -449,9 +487,29 @@ function FieldGLMap({ className, fieldGates }: MapType) {
                     </tbody>
                   </table>
 
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-row gap-2">
                     <button
-                      className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center justify-between"
+                      className="p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center"
+                      onClick={() => {
+                        setActiveGate(bareGate);
+                        setShowSettings(false);
+                      }}
+                    >
+                      <p>Close</p>
+                    </button>
+                    <button
+                      className="p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center justify-between"
+                      onClick={() => {
+                        if (activeGate) {
+                          setShowSettings(false);
+                          setShowEdit(true);
+                        }
+                      }}
+                    >
+                      <p>Edit Gate</p>
+                    </button>
+                    <button
+                      className="p-3 bg-red-500 hover:bg-red-300 text-Corp3 transition-colors rounded-xl items-center justify-between"
                       onClick={() => {
                         if (activeGate) {
                           deleteGate(fieldId ?? "", activeGate.gateId);
@@ -462,20 +520,106 @@ function FieldGLMap({ className, fieldGates }: MapType) {
                       }}
                     >
                       <p>Delete Gate</p>
-                      <FontAwesomeIcon icon={faCircleXmark} size="xl" />
                     </button>
                   </div>
+                </div>
+              </div>
+            </>
+          ) : null}
 
-                  <button
-                    className="flex flex-row gap-2 p-3 bg-Corp2 hover:bg-Corp4 transition-colors rounded-xl items-center"
-                    onClick={() => {
-                      setActiveGate(bareGate);
-                      setShowSettings(false);
-                    }}
-                  >
-                    <p>Close</p>
-                    <FontAwesomeIcon icon={faDoorOpen} size="xl" />
-                  </button>
+          {showEdit ? (
+            <>
+              <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-10 z-50 outline-none focus:outline-none">
+                <div className="bg-Corp3 rounded-xl p-12 items-center flex flex-col gap-6 border-Corp2 border">
+                  <div className="flex flex-col gap-2 items-center">
+                    <h1>Gate Editing</h1>
+                    <h2>{`Gate:  ${activeGate?.gateId}`}</h2>
+                  </div>
+
+                  <table className="rounded-xl bg-Corp2">
+                    <tbody>
+                      <tr>
+                        <td className="p-3">Current Water Level</td>
+                        <td className="p-3">
+                          <input
+                            id="waterLevel"
+                            placeholder="# inches"
+                            className="rounded-lg p-2 bg-Corp4 text-Corp1"
+                            value={currentWaterLevel}
+                            onChange={(event) =>
+                              setCurrentWaterLevel(event.target.value)
+                            }
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td className="p-3">Ideal Water Level</td>
+                        <td className="p-3">
+                          <input
+                            id="idealLevel"
+                            placeholder="# inches"
+                            className="rounded-lg p-2 bg-Corp4 text-Corp1"
+                            value={idealWaterLevel}
+                            onChange={(event) =>
+                              setIdealWaterLevel(event.target.value)
+                            }
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td className="p-3">Water Threshold</td>
+                        <td className="p-3">
+                          <input
+                            id="threshold"
+                            placeholder="# inches"
+                            className="rounded-lg p-2 bg-Corp4 text-Corp1"
+                            value={threshold}
+                            onChange={(event) =>
+                              setThreshold(event.target.value)
+                            }
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div className="flex flex-row gap-2">
+                    <button
+                      className="p-3 bg-Corp2 hover:bg-Corp3 transition-colors rounded-xl items-center"
+                      onClick={() => {
+                        setShowEdit(false);
+                        setShowSettings(true);
+                      }}
+                    >
+                      <p>Close</p>
+                    </button>
+                    <button
+                      className="p-3 bg-green-500 hover:bg-green-300 text-Corp4 transition-colors rounded-xl items-center justify-between"
+                      onClick={() => {
+                        if (activeGate) {
+                          updateGate(
+                            fieldId ?? "",
+                            activeGate.gateId,
+                            +idealWaterLevel,
+                            +threshold,
+                            +currentWaterLevel,
+                            activeGate.connectionError,
+                            activeGate.lowBattery,
+                            activeGate.status,
+                            activeGate.location
+                          );
+                          setActiveGate(bareGate);
+                          setShowEdit(false);
+                          setRefetch(true);
+                          setShowSettings(true);
+                        }
+                      }}
+                    >
+                      <p>Save Edits</p>
+                    </button>
+                  </div>
                 </div>
               </div>
             </>
