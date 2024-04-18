@@ -20,7 +20,7 @@ trafficRouter.get("/gen1", async (req, res) => {
       }
     }
   }
-  res.send({ message: "Traffic generated" }).status(200);
+  res.send({ message: "Traffic generated", status: "200" });
 });
 
 export default trafficRouter;

@@ -85,6 +85,7 @@ async function generateTraffic(email: string, fieldId: number) {
     currGate.threshold = threshold;
   }
   await user.save();
+  return { message: "Traffic generated", status: "200" };
 }
 
 async function getTraffic(userId: string, fieldId: number) {
