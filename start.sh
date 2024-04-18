@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Start the client 
-./client.sh
+./client.sh &
 
 # Start the server
-./server.sh
+./server.sh 
