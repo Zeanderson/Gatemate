@@ -1,17 +1,26 @@
 import { Router } from "express";
 import getTraffic from "../datasources/traffic";
+import { User } from "../models";
 const trafficRouter = Router();
 
 trafficRouter.get("/gen1", async (req, res) => {
-  const userId = req.query.userId;
-  const fieldId = req.query.fieldId;
+  if (!req.session?.user) {
+    res.send({ message: "Not logged in" }).status(401);
+  } else {
+    const email = req.session.user.email;
+    const user = await User.findOne({ email: email });
 
-  if (userId === undefined || typeof(userId) !== "string" || fieldId === undefined || typeof(fieldId) !== "string"){
-    return res.send("Please enter a valid user and field ID");
+    if (!user) {
+      res.send({ message: "User not found" }).status(404);
+    } else {
+      let numFields = user.fields.length;
+
+      for (let i = 0; i < numFields; i++) {
+        await getTraffic(email, user.fields[i].fieldId);
+      }
+    }
   }
-
-  const trafficData = await getTraffic(userId, fieldId);
-  res.send(trafficData)
+  res.send({ message: "Traffic generated" }).status(200);
 });
 
 export default trafficRouter;
